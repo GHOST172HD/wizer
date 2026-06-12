@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wizer Beauty — coiffure, manucure et soins. Découvrez nos services, nos réalisations et trouvez le salon le plus proche.">
+    <title>WIZER | Accueil</title>
+    <link rel="icon" href="assets/logo/logo-wizer.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="index.html" aria-label="Wizer Beauty, accueil">
+          <img src="assets/logo/logo-wizer.svg" alt="Logo Wizer Beauty">
+          <span>Wizer Beauty</span>
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+        <nav id="main-menu" class="main-menu" aria-label="Navigation principale">
+          <a class="active" href="index.html">Accueil</a>
+          <a href="services.html">Services & tarifs</a>
+          <a href="galerie.html">Galerie</a>
+          <a href="about.html">À propos</a>
+          <a href="localisation.html">Localisation</a>
+          <a href="contact.html">Contact</a>
+          <a class="button button-small" href="reservation.html">Réserver</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero section">
+        <div class="container hero-grid">
+          <div class="reveal">
+            <p class="eyebrow">Coiffure · Manucure · Beauté</p>
+            <h1>Votre style, sans compromis.</h1>
+            <p class="lead">Des soins soignés, une équipe accueillante et plusieurs salons pour vous recevoir au plus près.</p>
+            <div class="actions">
+              <a class="button" href="reservation.html">Réserver maintenant</a>
+              <a class="button button-outline" href="services.html">Voir les tarifs</a>
+            </div>
+          </div>
+          <div class="hero-visual reveal reveal-delay">
+            <img src="assets/images/accueil/hero.svg" alt="Illustration d'un espace beauté moderne">
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Nos essentiels</p>
+            <h2>Des prestations pensées pour vous</h2>
+          </div>
+          <div class="cards-grid three-cols">
+            <article class="card service-card reveal"><img src="assets/images/services/coiffure.svg" alt="Illustration coiffure"><h3>Coiffure</h3><p>Coupes, tresses, soins et mises en beauté.</p></article>
+            <article class="card service-card reveal"><img src="assets/images/services/manucure.svg" alt="Illustration manucure"><h3>Manucure</h3><p>Pose simple, gel, pédicure et nail art.</p></article>
+            <article class="card service-card reveal"><img src="assets/images/services/soins.svg" alt="Illustration soins"><h3>Soins</h3><p>Des moments de détente dans un espace propre et chaleureux.</p></article>
+          </div>
+          <div class="centered"><a class="text-link" href="services.html">Découvrir les services et tarifs →</a></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading split-heading">
+            <div><p class="eyebrow">Galerie</p><h2>Un aperçu de nos réalisations</h2></div>
+            <a class="text-link" href="galerie.html">Voir toute la galerie →</a>
+          </div>
+          <div class="gallery-preview">
+            <img class="reveal" src="assets/images/galerie/look-01.svg" alt="Exemple de coiffure">
+            <img class="reveal" src="assets/images/galerie/look-02.svg" alt="Exemple de manucure">
+            <img class="reveal" src="assets/images/galerie/look-03.svg" alt="Exemple de tresses">
+            <img class="reveal" src="assets/images/galerie/look-04.svg" alt="Exemple de pédicure">
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark">
+        <div class="container split-callout">
+          <div><p class="eyebrow">Pratique</p><h2>Trouvez le salon le plus proche</h2><p>Autorisez votre position, consultez la distance approximative et vérifiez si le salon est ouvert.</p></div>
+          <a class="button button-light" href="localisation.html">Voir les salons</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div><strong>Wizer Beauty</strong><p>Coiffure, manucure et soins.</p></div>
+        <div><strong>Liens rapides</strong><a href="services.html">Tarifs</a><a href="galerie.html">Galerie</a><a href="contact.html">Contact</a></div>
+        <div><strong>Réseaux</strong><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">WhatsApp</a></div>
+      </div>
+      <p class="copyright">© <span data-year></span> Wizer Beauty. Tous droits réservés.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>

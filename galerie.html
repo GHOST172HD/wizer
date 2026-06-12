@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Galerie | Wizer Beauty</title>
+        <link rel="icon" href="assets/logo/logo-wizer.svg" type="image/svg+xml">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/responsive.css">
+        <link rel="stylesheet" href="css/animations.css">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container nav-wrap">
+                <a class="brand" href="index.html">
+                    <img src="assets/logo/logo-wizer.svg" alt="Logo Wizer Beauty">
+                    <span>Wizer Beauty</span>
+                </a>
+                <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+                <nav id="main-menu" class="main-menu">
+                    <a href="index.html">Accueil</a>
+                    <a href="services.html">Services & tarifs</a>
+                    <a class="active" href="galerie.html">Galerie</a>
+                    <a href="about.html">À propos</a>
+                    <a href="localisation.html">Localisation</a>
+                    <a href="contact.html">Contact</a>
+                    <a class="button button-small" href="reservation.html">Réserver</a>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <section class="page-hero section">
+                <div class="container">
+                    <p class="eyebrow">Inspiration</p>
+                    <h1>Galerie</h1>
+                    <p class="lead">Photos, vidéos locales et contenus Instagram ou TikTok lisibles depuis le site.</p>
+                </div>
+            </section>
+            <section class="section">
+                <div class="container">
+                    <div class="filter-bar" id="gallery-filters"></div>
+                    <div class="gallery-grid" id="gallery-grid"></div>
+                </div>
+            </section>
+            <section class="section section-soft">
+                <div class="container">
+                    <div class="section-heading">
+                        <p class="eyebrow">Réseaux sociaux</p>
+                        <h2>Nos vidéos et publications</h2>
+                        <p>Les exemples servent de modèles. Ajoute ensuite les vrais liens publics du salon dans <code>data/socials.js</code>.</p>
+                    </div>
+                    <div class="social-grid" id="social-grid"></div>
+                </div>
+            </section>
+        </main>
+        <footer class="site-footer">
+            <p class="copyright">© <span data-year></span> Wizer Beauty.</p>
+        </footer>
+        <script async src="https://www.tiktok.com/embed.js"></script>
+        <script async src="https://www.instagram.com/embed.js"></script>
+        <script src="data/gallery.js"></script>
+        <script src="data/socials.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/galerie.js"></script>
+    </body>
+</html>

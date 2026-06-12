@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Localisation | Wizer Beauty</title>
+        <link rel="icon" href="assets/logo/logo-wizer.svg" type="image/svg+xml">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3SgetjnTUZrPPDO9xIVvFictnA5MY=" crossorigin="">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/responsive.css">
+        <link rel="stylesheet" href="css/animations.css">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container nav-wrap">
+                <a class="brand" href="index.html">
+                    <img src="assets/logo/logo-wizer.svg" alt="Logo">
+                    <span>Wizer Beauty</span>
+                </a>
+                <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+                <nav id="main-menu" class="main-menu">
+                    <a href="index.html">Accueil</a>
+                    <a href="services.html">Services & tarifs</a>
+                    <a href="galerie.html">Galerie</a><a href="about.html">À propos</a>
+                    <a class="active" href="localisation.html">Localisation</a>
+                    <a href="contact.html">Contact</a>
+                    <a class="button button-small" href="reservation.html">Réserver</a>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <section class="page-hero section">
+                <div class="container">
+                    <p class="eyebrow">À proximité</p>
+                    <h1>Trouvez votre salon</h1>
+                    <p class="lead">Autorisez votre position pour classer les salons par distance approximative.</p>
+                    <button class="button" id="locate-button" type="button">Utiliser ma position</button>
+                    <p class="status-message" id="location-status" aria-live="polite"></p>
+                </div>
+            </section>
+            <section class="section">
+                <div class="container location-layout">
+                    <div id="map" class="map" aria-label="Carte des salons"></div>
+                    <aside>
+                        <h2>Nos salons</h2>
+                        <div id="salons-list" class="salons-list"></div>
+                    </aside>
+                </div>
+            </section>
+        </main>
+        <footer class="site-footer">
+            <p class="copyright">©
+                <span data-year></span> Wizer Beauty.
+            </p>
+        </footer>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src="data/salons.js"></script><script src="js/main.js"></script>
+        <script src="js/localisation.js"></script>
+    </body>
+</html>

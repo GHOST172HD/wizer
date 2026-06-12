@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Réserver | Wizer Beauty</title>
+        <link rel="icon" href="assets/logo/logo-wizer.svg" type="image/svg+xml">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/responsive.css">
+        <link rel="stylesheet" href="css/animations.css">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container nav-wrap">
+                <a class="brand" href="index.html">
+                    <img src="assets/logo/logo-wizer.svg" alt="Logo">
+                    <span>Wizer Beauty</span>
+                </a>
+                <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+                <nav id="main-menu" class="main-menu">
+                    <a href="index.html">Accueil</a>
+                    <a href="services.html">Services & tarifs</a>
+                    <a href="galerie.html">Galerie</a>
+                    <a href="about.html">À propos</a>
+                    <a href="localisation.html">Localisation</a>
+                    <a href="contact.html">Contact</a>
+                    <a class="button button-small active" href="reservation.html">Réserver</a>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <section class="page-hero section">
+                <div class="container">
+                    <p class="eyebrow">Rendez-vous</p>
+                    <h1>Réserver</h1>
+                    <p class="lead">Le formulaire prépare un message WhatsApp. Aucun compte client n’est nécessaire.</p>
+                </div>
+            </section>
+            <section class="section">
+                <div class="container form-wrap">
+                    <form id="booking-form" class="booking-form">
+                        <label>Nom complet<input type="text" name="name" required></label>
+                        <label>Téléphone<input type="tel" name="phone" required></label>
+                        <label>Salon<select name="salon" id="booking-salon" required></select></label>
+                        <label>Service<select name="service" id="booking-service" required></select></label>
+                        <label>Date souhaitée<input type="date" name="date" required></label>
+                        <label>Heure souhaitée<input type="time" name="time" required></label>
+                        <label class="full-width">Message facultatif<textarea name="message" rows="4" placeholder="Précisions utiles..."></textarea>
+                        </label>
+                        <button class="button full-width" type="submit">Envoyer la demande sur WhatsApp</button>
+                    </form>
+                    <p class="form-note">Remplace le numéro WhatsApp principal dans <code>js/reservation.js</code>.</p>
+                </div>
+            </section>
+        </main>
+        <footer class="site-footer">
+            <p class="copyright">© <span data-year></span> Wizer Beauty.</p>
+        </footer>
+        <script src="data/salons.js"></script>
+        <script src="data/services.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/reservation.js"></script>
+    </body>
+</html>
