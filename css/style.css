@@ -55,7 +55,7 @@ a{text-decoration:none;color:inherit}
   color:var(--text)}
 
 .brand img {
-    width: clamp(125px, 22vw, 120px);
+    width: clamp(125px, 22vw, 110px);
     height: auto;
     filter: drop-shadow(0 0 12px rgba(255, 91, 166, .28));
 }
