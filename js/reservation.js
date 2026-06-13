@@ -1,4 +1,4 @@
-const MAIN_WHATSAPP='243976938179';
+const MAIN_WHATSAPP='243820068211';
 const salonSelect=document.querySelector('#booking-salon');
 const serviceSelect=document.querySelector('#booking-service');
 const form=document.querySelector('#booking-form');
