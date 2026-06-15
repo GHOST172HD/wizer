@@ -24,15 +24,15 @@ const LOCATION_SETTINGS = {
 
 const SALONS = [
   {
-    id: 'gombe',
-    name: 'Wizer — Gombe',
+    id: 'bandal',
+    name: 'Wizer — Bandal',
     district: '',
     address: 'Adresse exemple, Gombe, Kinshasa',
     city: 'Kinshasa',
     lat: -4.3105,
     lng: 15.2897,
-    phone: '+243000000000',
-    whatsapp: '243000000000',
+    phone: '+243820068211',
+    whatsapp: '243820068211',
     email: '',
     googleMapsUrl: '',
     hours: {

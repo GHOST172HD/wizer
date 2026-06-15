@@ -343,3 +343,86 @@ body.modal-open{overflow:hidden}
   .gallery-modal__close{top:-3.2rem;right:0}
 }
 
+
+
+/* =========================================================
+   Galerie focus : mobile propre + ratios image préservés
+   - Les flèches restent sur PC.
+   - Sur mobile, elles disparaissent.
+   - L'image garde son vrai format : 16:9, 4:5, portrait, etc.
+========================================================= */
+
+.gallery-viewer__image,
+.viewer-image,
+.lightbox-image,
+.focus-image {
+    max-width: min(92vw, 980px);
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    aspect-ratio: auto;
+}
+
+.gallery-viewer__main,
+.viewer-main,
+.lightbox-main,
+.focus-main {
+    display: grid;
+    place-items: center;
+}
+
+/* Sécurité : si le JS crée ces boutons, on les masque sur mobile */
+@media (max-width: 760px) {
+    .gallery-viewer__arrow,
+    .viewer-arrow,
+    .lightbox-arrow,
+    .focus-arrow,
+    .gallery-focus-arrow,
+    .gallery-modal-arrow,
+    .gallery-modal__nav,
+    [data-viewer-prev],
+    [data-viewer-next] {
+        display: none !important;
+    }
+
+    .gallery-viewer__image,
+    .viewer-image,
+    .lightbox-image,
+    .focus-image {
+        max-width: 94vw;
+        max-height: 78vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .gallery-viewer__close,
+    .viewer-close,
+    .lightbox-close,
+    .focus-close {
+        top: 1rem;
+        right: 1rem;
+    }
+}
+
+
+/* Override final pour le viewer réel du projet */
+.gallery-modal__center img{
+    width:auto;
+    max-width:min(92vw, 980px);
+    max-height:82vh;
+    height:auto;
+    object-fit:contain;
+    aspect-ratio:auto;
+}
+@media (max-width:760px){
+    .gallery-modal__nav{display:none !important;}
+    .gallery-modal__center img{
+        max-width:94vw;
+        max-height:78vh;
+        width:auto;
+        height:auto;
+        object-fit:contain;
+    }
+}

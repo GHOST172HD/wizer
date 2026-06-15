@@ -67,13 +67,13 @@ function getModal() {
     <div class="gallery-modal__backdrop" data-gallery-close></div>
     <div class="gallery-modal__shell" role="dialog" aria-modal="true" aria-label="Aperçu de la galerie">
       <button class="gallery-modal__close" type="button" data-gallery-close aria-label="Fermer">×</button>
-      <button class="gallery-modal__nav gallery-modal__nav--prev" type="button" data-gallery-prev aria-label="Image précédente">‹</button>
+      <button class="gallery-modal__nav gallery-modal__nav--prev" type="button" data-gallery-prev aria-label="Image précédente" data-viewer-prev>‹</button>
       <div class="gallery-modal__stage">
-        <button class="gallery-modal__side gallery-modal__side--prev" type="button" data-gallery-prev aria-label="Image précédente"></button>
+        <button class="gallery-modal__side gallery-modal__side--prev" type="button" data-gallery-prev aria-label="Image précédente" data-viewer-prev></button>
         <figure class="gallery-modal__center" data-gallery-center aria-label="Image suivante"></figure>
-        <button class="gallery-modal__side gallery-modal__side--next" type="button" data-gallery-next aria-label="Image suivante"></button>
+        <button class="gallery-modal__side gallery-modal__side--next" type="button" data-gallery-next aria-label="Image suivante" data-viewer-next></button>
       </div>
-      <button class="gallery-modal__nav gallery-modal__nav--next" type="button" data-gallery-next aria-label="Image suivante">›</button>
+      <button class="gallery-modal__nav gallery-modal__nav--next" type="button" data-gallery-next aria-label="Image suivante" data-viewer-next>›</button>
       <p class="gallery-modal__counter" data-gallery-counter></p>
     </div>
   `;
