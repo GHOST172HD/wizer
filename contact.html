@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Contact | Wizer Beauty</title>
+        <title>Contact | Wizer</title>
         <link rel="icon" href="assets/logo/logo-wizer.svg" type="image/svg+xml">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
@@ -32,35 +32,34 @@
                 <div class="container">
                     <p class="eyebrow">Nous joindre</p>
                     <h1>Contact</h1>
-                    <p class="lead">Les informations sont des exemples à modifier.</p>
+                    <p class="lead">Les contacts principaux se modifient dans <code>data/contact.js</code>. Les adresses, horaires et liens Google Maps se modifient dans <code>data/salons.js</code>.</p>
                 </div>
             </section>
             <section class="section">
-                <div class="container cards-grid three-cols">
-                    <article class="card">
-                        <h3>WhatsApp</h3>
-                        <p>+243 000 000 000</p>
-                        <a class="text-link" href="https://wa.me/243000000000">Écrire sur WhatsApp →</a>
-                    </article>
-                    <article class="card">
-                        <h3>Réseaux sociaux</h3>
-                        <p>Instagram · TikTok · Facebook</p>
-                        <a class="text-link" href="#">Voir les réseaux →</a>
-                    </article>
-                    <article class="card">
-                        <h3>Salons</h3>
-                        <p>Consulte les adresses, horaires et distances.</p>
-                        <a class="text-link" href="localisation.html">Trouver un salon →</a>
-                    </article>
+                <div class="container">
+                    <div id="contact-main" class="cards-grid three-cols"></div>
+                </div>
+            </section>
+            <section class="section section-soft">
+                <div class="container">
+                    <div class="section-heading">
+                        <p class="eyebrow">Nos salons</p>
+                        <h2>Adresses, horaires et itinéraires</h2>
+                    </div>
+                    <div id="contact-salons" class="cards-grid three-cols"></div>
                 </div>
             </section>
         </main>
         <footer class="site-footer">
             <p class="copyright">© 
-                <span data-year></span> Wizer Beauty.
+                <span data-year></span> Wizer.
             </p>
             </footer>
-            <script src="js/main.js"></script>
+        <script src="data/contact.js"></script>
+        <script src="data/salons.js"></script>
+        <script src="js/salon-utils.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/contact.js"></script>
     </body>
 </html>
 

@@ -32,7 +32,7 @@
                 <div class="container">
                     <p class="eyebrow">À proximité</p>
                     <h1>Trouvez votre salon</h1>
-                    <p class="lead">Autorisez votre position pour classer les salons par distance approximative.</p>
+                    <p class="lead">Autorisez votre position pour classer les salons par distance approximative. Les vrais liens Google Maps se mettent dans <code>data/salons.js</code>.</p>
                     <button class="button" id="locate-button" type="button">Utiliser ma position</button>
                     <p class="status-message" id="location-status" aria-live="polite"></p>
                 </div>
@@ -42,6 +42,7 @@
                     <div id="map" class="map" aria-label="Carte des salons"></div>
                     <aside>
                         <h2>Nos salons</h2>
+                        <p class="salon-meta">Mets uniquement le lien Google Maps dans <code>googleMapsUrl</code>. Pas besoin d'un champ Google Business séparé.</p>
                         <div id="salons-list" class="salons-list"></div>
                     </aside>
                 </div>
@@ -53,7 +54,10 @@
             </p>
         </footer>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <script src="data/salons.js"></script><script src="js/main.js"></script>
+        
+        <script src="data/salons.js"></script>
+        <script src="js/salon-utils.js"></script>
+        <script src="js/main.js"></script>
         <script src="js/localisation.js"></script>
     </body>
 </html>

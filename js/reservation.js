@@ -1,15 +1,48 @@
-const MAIN_WHATSAPP='243820068211';
-const salonSelect=document.querySelector('#booking-salon');
-const serviceSelect=document.querySelector('#booking-service');
-const form=document.querySelector('#booking-form');
-salonSelect.innerHTML='<option value="">Choisir un salon</option>'+SALONS.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');serviceSelect.innerHTML='<option value="">Choisir un service</option>'+SERVICES.flatMap(group=>group.items.map(item=>`<option value="${item.name}">${group.category} — ${item.name}</option>`)).join('');
-const params=new URLSearchParams(location.search);
-if(params.get('salon'))salonSelect.value=params.get('salon');
-if(params.get('service'))serviceSelect.value=params.get('service');
-form.addEventListener
-(
-    'submit',event=>{event.preventDefault();
-    const data=new FormData(form);const salon=SALONS.find(s=>s.id===data.get('salon'));
-    const text=`Bonjour, je souhaite réserver.%0A%0ANom : ${data.get('name')}%0ATéléphone : ${data.get('phone')}%0ASalon : ${salon?salon.name:data.get('salon')}%0AService : ${data.get('service')}%0ADate : ${data.get('date')}%0AHeure : ${data.get('time')}%0AMessage : ${data.get('message')||'Aucun'}`;
-    window.open(`https://wa.me/${MAIN_WHATSAPP}?text=${text}`,'_blank','noopener');
-});
+const mainWhatsapp = (typeof SITE_CONTACT !== 'undefined' && SITE_CONTACT.mainWhatsapp) ? SITE_CONTACT.mainWhatsapp : '243820068211';
+const salonSelect = document.querySelector('#booking-salon');
+const serviceSelect = document.querySelector('#booking-service');
+const form = document.querySelector('#booking-form');
+
+if (salonSelect) {
+  salonSelect.innerHTML = '<option value="">Choisir un salon</option>'
+    + SALONS.map(salon => `<option value="${salon.id}">${salon.name}</option>`).join('');
+}
+
+if (serviceSelect) {
+  serviceSelect.innerHTML = '<option value="">Choisir un service</option>'
+    + SERVICES.flatMap(group => group.items.map(item => `
+      <option value="${item.name}">${group.category} — ${item.name}</option>
+    `)).join('');
+}
+
+const params = new URLSearchParams(location.search);
+if (params.get('salon') && salonSelect) salonSelect.value = params.get('salon');
+if (params.get('service') && serviceSelect) serviceSelect.value = params.get('service');
+
+if (form) {
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+
+    const data = new FormData(form);
+    const salon = SALONS.find(s => s.id === data.get('salon'));
+    const targetWhatsapp = salon?.whatsapp || mainWhatsapp;
+
+    const message = [
+      'Bonjour, je souhaite réserver.',
+      '',
+      `Nom : ${data.get('name')}`,
+      `Téléphone : ${data.get('phone')}`,
+      `Salon : ${salon ? salon.name : data.get('salon')}`,
+      `Service : ${data.get('service')}`,
+      `Date : ${data.get('date')}`,
+      `Heure : ${data.get('time')}`,
+      `Message : ${data.get('message') || 'Aucun'}`
+    ].join('\\n');
+
+    const url = typeof whatsappHref === 'function'
+      ? whatsappHref(targetWhatsapp, message)
+      : `https://wa.me/${targetWhatsapp}?text=${encodeURIComponent(message)}`;
+
+    window.open(url, '_blank', 'noopener');
+  });
+}
