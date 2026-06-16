@@ -126,7 +126,7 @@ function renderLightbox() {
   modal.querySelector('.gallery-modal__side--prev').innerHTML = hasMany ? imageMarkup(previous) : '';
   modal.querySelector('.gallery-modal__side--next').innerHTML = hasMany ? imageMarkup(next) : '';
   modal.querySelector('[data-gallery-counter]').textContent = hasMany
-    ? `${lightboxIndex + 1} / ${lightboxItems.length} · Clique l’image centrale ou swipe pour avancer`
+    ? `${lightboxIndex + 1} / ${lightboxItems.length}`
     : 'Image unique';
 
   modal.querySelectorAll('[data-gallery-prev], [data-gallery-next]').forEach(button => {
@@ -204,7 +204,7 @@ if (socialGrid) {
         <article class="social-card">
           <h3>${escapeHTML(item.title)}</h3>
           <iframe loading="lazy" src="https://www.tiktok.com/player/v1/${escapeHTML(item.videoId)}?autoplay=0&loop=0" allow="encrypted-media; fullscreen" title="${escapeHTML(item.title)}"></iframe>
-          <a class="text-link" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">Ouvrir sur TikTok →</a>
+          <a class="text-link" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">Ouvrir sur TikTok</a>
         </article>
       `;
     }
