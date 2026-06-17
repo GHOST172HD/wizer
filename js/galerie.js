@@ -197,22 +197,55 @@ document.addEventListener('keydown', event => {
   if (event.key === 'ArrowLeft') goLightbox(-1);
 });
 
+function getInstagramEmbedUrl(url = '') {
+  const cleanUrl = String(url).split('?')[0].replace(/\/?$/, '/');
+  return cleanUrl ? `${cleanUrl}embed/` : '';
+}
+
 if (socialGrid) {
   socialGrid.innerHTML = SOCIAL_ITEMS.map(item => {
     if (item.type === 'tiktok' && item.videoId) {
       return `
         <article class="social-card">
           <h3>${escapeHTML(item.title)}</h3>
-          <iframe loading="lazy" src="https://www.tiktok.com/player/v1/${escapeHTML(item.videoId)}?autoplay=0&loop=0" allow="encrypted-media; fullscreen" title="${escapeHTML(item.title)}"></iframe>
-          <a class="text-link" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">Ouvrir sur TikTok</a>
+          <iframe
+            loading="lazy"
+            src="https://www.tiktok.com/player/v1/${escapeHTML(item.videoId)}?autoplay=0&loop=0"
+            allow="encrypted-media; fullscreen"
+            title="${escapeHTML(item.title)}">
+          </iframe>
+          <a class="text-link" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">
+            Ouvrir sur TikTok
+          </a>
+        </article>
+      `;
+    }
+
+    if (item.type === 'instagram' && item.url) {
+      const embedUrl = getInstagramEmbedUrl(item.url);
+
+      return `
+        <article class="social-card">
+          <h3>${escapeHTML(item.title)}</h3>
+          <iframe
+            loading="lazy"
+            src="${escapeHTML(embedUrl)}"
+            allow="encrypted-media; fullscreen"
+            title="${escapeHTML(item.title)}">
+          </iframe>
+          <a class="text-link" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">
+            Ouvrir sur Instagram
+          </a>
         </article>
       `;
     }
 
     return `
       <article class="social-card">
-        <h3>${escapeHTML(item.title)}</h3>
-        <div class="embed-placeholder">Ajoute ici le code d’intégration d’une publication Instagram publique.<br><small>Consulte README.md pour la méthode.</small></div>
+        <h3>${escapeHTML(item.title || 'Publication')}</h3>
+        <div class="embed-placeholder">
+          Publication indisponible. Vérifie que le lien est public et correctement écrit.
+        </div>
       </article>
     `;
   }).join('');

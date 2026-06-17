@@ -2,9 +2,9 @@ const SITE_CONTACT = {
   brandName: 'Wizer',
   mainPhone: '+243820068211',
   mainWhatsapp: '243820068211',
-  email: 'contact@wizerbeauty.com',
-  instagramUrl: '#',
-  tiktokUrl: '#',
-  facebookUrl: '#',
-  contactNote: 'Remplace ces informations par les vrais contacts du salon.'
+  email: 'saintchristduga172@gmail.com',
+  instagramUrl: 'https://www.instagram.com/wizer.beauty/',
+  tiktokUrl: 'https://www.tiktok.com/@wizer._',
+  facebookUrl: 'https://www.facebook.com/',
+  contactNote: ''
 };

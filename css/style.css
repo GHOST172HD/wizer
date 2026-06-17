@@ -92,7 +92,6 @@ a{text-decoration:none;color:inherit}
 .button-light{background:var(--text);
   border-color:var(--text);
   color:#160d18;box-shadow:none}
-
 .button-small{min-height:40px;
   padding:.55rem .95rem}
 .hero-grid,.two-cols,.location-layout,.split-callout{display:grid;
@@ -142,7 +141,7 @@ h3{margin:.55rem 0 .3rem;
 .centered{text-align:center;
   margin-top:1.4rem}
 .text-link{color:#ff82bc;
-  font-weight:800}
+  font-weight:1000}
 .gallery-preview,.gallery-grid{display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:.75rem}

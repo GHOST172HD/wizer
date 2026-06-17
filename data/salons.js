@@ -16,8 +16,8 @@
   Donc lat = -4.32512 et lng = 15.31288.
 */
 const LOCATION_SETTINGS = {
-  defaultCenter: [-4.325, 15.31],
-  defaultZoom: 12,
+  defaultCenter: [-4.3421928, 15.2813896],
+  defaultZoom: 15,
   tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   tileAttribution: '&copy; OpenStreetMap contributors'
 };
@@ -26,15 +26,15 @@ const SALONS = [
   {
     id: 'bandal',
     name: 'Wizer — Bandal',
-    district: '',
-    address: 'Adresse exemple, Gombe, Kinshasa',
+    district: 'Bandalungwa',
+    address: '5091, avenue Kasa-Vubu, arrêt Bakayau, Bandalungwa, Kinshasa',
     city: 'Kinshasa',
-    lat: -4.3105,
-    lng: 15.2897,
+    lat: -4.3421928,
+    lng: 15.2813896,
     phone: '+243820068211',
     whatsapp: '243820068211',
-    email: '',
-    googleMapsUrl: '',
+    email: 'saintchristduga172@gmail.com',
+    googleMapsUrl: 'https://maps.app.goo.gl/cvKPxRjjusKZ7qvY8',
     hours: {
       monday: { open: '08:00', close: '18:00' },
       tuesday: { open: '08:00', close: '18:00' },
@@ -53,9 +53,9 @@ const SALONS = [
     city: 'Kinshasa',
     lat: -4.3576,
     lng: 15.3384,
-    phone: '+243000000000',
-    whatsapp: '243000000000',
-    email: '',
+    phone: '+243820068211',
+    whatsapp: '243820068211',
+    email: 'saintchristduga172@gmail.com',
     googleMapsUrl: '',
     hours: {
       monday: { open: '08:30', close: '18:00' },
@@ -75,9 +75,9 @@ const SALONS = [
     city: 'Kinshasa',
     lat: -4.3428,
     lng: 15.2512,
-    phone: '+243000000000',
-    whatsapp: '243000000000',
-    email: '',
+    phone: '+243820068211',
+    whatsapp: '243820068211',
+    email: 'saintchristduga172@gmail.com',
     googleMapsUrl: '',
     hours: {
       monday: { open: '09:00', close: '17:30' },
