@@ -498,3 +498,40 @@ body.modal-open{overflow:hidden}
     min-height: 360px;
   }
 }
+
+
+/* =========================================================
+   Sécurité Leaflet : empêche les tuiles de devenir des images
+   normales si le navigateur ne charge pas correctement le CDN.
+========================================================= */
+#map {
+  position: relative;
+  overflow: hidden;
+}
+
+#map .leaflet-pane,
+#map .leaflet-tile,
+#map .leaflet-marker-icon,
+#map .leaflet-marker-shadow,
+#map .leaflet-tile-container,
+#map .leaflet-pane > svg,
+#map .leaflet-pane > canvas,
+#map .leaflet-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#map img.leaflet-tile {
+  display: block;
+  max-width: none !important;
+  max-height: none !important;
+  width: 256px !important;
+  height: 256px !important;
+  border: 0;
+  border-radius: 0;
+}
+
+#map .leaflet-control-container {
+  position: static;
+}
