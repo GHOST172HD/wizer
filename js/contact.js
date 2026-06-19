@@ -31,7 +31,9 @@ if (contactMain) {
 }
 
 if (contactSalons) {
-  contactSalons.innerHTML = SALONS.map(salon => {
+  const activeSalons = typeof getActiveSalons === 'function' ? getActiveSalons() : SALONS.filter(salon => salon.active !== false);
+
+  contactSalons.innerHTML = activeSalons.map(salon => {
     const status = getOpenStatus(salon);
     return `
       <article class="salon-card">

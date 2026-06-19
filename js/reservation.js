@@ -2,10 +2,11 @@ const mainWhatsapp = (typeof SITE_CONTACT !== 'undefined' && SITE_CONTACT.mainWh
 const salonSelect = document.querySelector('#booking-salon');
 const serviceSelect = document.querySelector('#booking-service');
 const form = document.querySelector('#booking-form');
+const ACTIVE_SALONS = typeof getActiveSalons === 'function' ? getActiveSalons() : SALONS.filter(salon => salon.active !== false);
 
 if (salonSelect) {
   salonSelect.innerHTML = '<option value="">Choisir un salon</option>'
-    + SALONS.map(salon => `<option value="${salon.id}">${salon.name}</option>`).join('');
+    + ACTIVE_SALONS.map(salon => `<option value="${salon.id}">${salon.name}</option>`).join('');
 }
 
 if (serviceSelect) {
@@ -24,7 +25,7 @@ if (form) {
     event.preventDefault();
 
     const data = new FormData(form);
-    const salon = SALONS.find(s => s.id === data.get('salon'));
+    const salon = ACTIVE_SALONS.find(s => s.id === data.get('salon'));
     const targetWhatsapp = salon?.whatsapp || mainWhatsapp;
 
     const message = [

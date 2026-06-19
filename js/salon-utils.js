@@ -9,6 +9,12 @@ const DAY_LABELS = {
   sunday: 'dimanche'
 };
 
+
+function getActiveSalons() {
+  if (typeof SALONS === 'undefined' || !Array.isArray(SALONS)) return [];
+  return SALONS.filter(salon => salon.active !== false);
+}
+
 function cleanPhone(value = '') {
   return String(value).replace(/[^0-9]/g, '');
 }

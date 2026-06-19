@@ -425,3 +425,76 @@ body.modal-open{overflow:hidden}
         object-fit:contain;
     }
 }
+
+
+/* =========================================================
+   Carte de localisation : lisibilité et interaction
+========================================================= */
+.map {
+  min-height: 420px;
+  background: #110a12;
+}
+
+.leaflet-container {
+  font: inherit;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #171019;
+  color: #f4edf3;
+}
+
+.leaflet-popup-content a {
+  color: #ff82bc;
+  font-weight: 700;
+}
+
+.map-popup__nearest,
+.nearest-badge {
+  color: #ff82bc;
+  font-weight: 800;
+}
+
+.nearest-badge {
+  display: inline-flex;
+  margin: 0 0 .3rem;
+  padding: .22rem .58rem;
+  border: 1px solid rgba(255, 130, 188, .36);
+  border-radius: 999px;
+  background: rgba(255, 91, 166, .10);
+  font-size: .78rem;
+}
+
+.salon-card[data-salon-id] {
+  cursor: pointer;
+}
+
+.salon-card[data-salon-id]:focus-visible {
+  outline: 2px solid #ff82bc;
+  outline-offset: 3px;
+}
+
+.status-message[data-status="success"] {
+  color: #7ce7aa;
+}
+
+.status-message[data-status="error"] {
+  color: #ff929f;
+}
+
+.status-message[data-status="loading"] {
+  color: #ffb2d5;
+}
+
+#locate-button:disabled {
+  cursor: wait;
+  opacity: .72;
+}
+
+@media (max-width: 699px) {
+  .map {
+    height: min(62vh, 520px);
+    min-height: 360px;
+  }
+}

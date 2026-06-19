@@ -22,9 +22,16 @@ const LOCATION_SETTINGS = {
   tileAttribution: '&copy; OpenStreetMap contributors'
 };
 
+/*
+  IMPORTANT :
+  - active: true  = le salon apparaît sur la carte, dans Contact et Réservation.
+  - active: false = le salon reste enregistré mais est ignoré partout.
+  Cela évite qu'une adresse d'exemple soit choisie comme "salon le plus proche".
+*/
 const SALONS = [
   {
     id: 'bandal',
+    active: true,
     name: 'Wizer — Bandal',
     district: 'Bandalungwa',
     address: '5091, avenue Kasa-Vubu, arrêt Bakayau, Bandalungwa, Kinshasa',
@@ -47,6 +54,7 @@ const SALONS = [
   },
   {
     id: 'limete',
+    active: false, // Exemple désactivé : active seulement quand les vraies données sont prêtes.
     name: 'Wizer — Limete',
     district: '',
     address: 'Adresse exemple, Limete, Kinshasa',
@@ -69,6 +77,7 @@ const SALONS = [
   },
   {
     id: 'ngaliema',
+    active: false, // Exemple désactivé : active seulement quand les vraies données sont prêtes.
     name: 'Wizer — Ngaliema',
     district: '',
     address: 'Adresse exemple, Ngaliema, Kinshasa',
