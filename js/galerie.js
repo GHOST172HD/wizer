@@ -4,11 +4,11 @@ const socialGrid = document.querySelector('#social-grid');
 
 const labels = {
   all: 'Tout',
-  coiffure: 'Coiffure',
+  'coiffure-tresse': 'Coiffure / Tresse',
   manucure: 'Manucure',
   pedicure: 'Pédicure',
-  'avant-apres': 'Avant / Après',
-  soins: 'Soins'
+  soins: 'Soins',
+  'avant-apres': 'Avant / Après'
 };
 
 let currentFilter = 'all';
@@ -32,10 +32,20 @@ function renderGallery(category = 'all') {
 
   const items = GALLERY_ITEMS.filter(item => category === 'all' || item.category === category);
 
+  if (!items.length) {
+    galleryGrid.innerHTML = `
+      <p class="gallery-empty">
+        Aucune image n’a encore été ajoutée dans la catégorie
+        <strong>${escapeHTML(labels[category] || category)}</strong>.
+      </p>
+    `;
+    return;
+  }
+
   galleryGrid.innerHTML = items.map(item => `
     <button class="gallery-tile" type="button" data-gallery-id="${escapeHTML(item.id)}" aria-label="Agrandir ${escapeHTML(item.alt)}">
       <img loading="lazy" src="${escapeHTML(item.src)}" alt="${escapeHTML(item.alt)}">
-      <span class="gallery-tile__tag">${item.viewer === 'single' ? 'Focus' : 'Collection'}</span>
+      <span class="gallery-tile__tag">${item.viewer === '' ? '' : ''}</span>
     </button>
   `).join('');
 }
@@ -44,10 +54,10 @@ function getItemById(id) {
   return GALLERY_ITEMS.find(item => item.id === id);
 }
 
-function getLightboxCollection(item) {
+function getLightbox(item) {
   if (!item) return [];
 
-  if (item.viewer === 'single') {
+  if (item.viewer === '') {
     return [item];
   }
 
@@ -135,7 +145,7 @@ function renderLightbox() {
 }
 
 function openLightbox(item) {
-  lightboxItems = getLightboxCollection(item);
+  lightboxItems = getLightbox(item);
   lightboxIndex = Math.max(0, lightboxItems.findIndex(candidate => candidate.id === item.id));
 
   if (!lightboxItems.length) return;

@@ -8,7 +8,7 @@
   --soft-2:#22111f;
   --text:#f4edf3;
   --text-soft:#e8d9e7;
-  --muted:#b59aac;
+  --muted:#ffa3e0;
   --accent:#ff5ba6;
   --accent-2:#d9468b;
   --accent-glow:rgba(255,91,166,.28);
@@ -173,13 +173,15 @@ code{background:rgba(255,255,255,.06);padding:.15rem .3rem;border-radius:5px;col
 .site-footer{background:linear-gradient(180deg, #0b070c, #060407);color:var(--text);padding:2rem 0 1rem;border-top:1px solid var(--line)}
 .footer-grid{display:grid;gap:1.2rem}.footer-grid a{display:block;color:var(--muted)}
 .copyright{text-align:center;color:#8f788a;font-size:.9rem;margin:1.3rem 0 0}
+.gallery-modal__counter {
+    display: none !important;
+}
 
 /* ------------------------------
    Galerie focus / carousel
 ------------------------------ */
 body.modal-open{overflow:hidden}
 .gallery-tile{
-  position:relative;
   display:block;
   width:100%;
   padding:0;
@@ -309,11 +311,6 @@ body.modal-open{overflow:hidden}
 }
 .gallery-modal__nav--prev{left:.4rem}
 .gallery-modal__nav--next{right:.4rem}
-.gallery-modal__counter{
-  text-align:center;
-  color:var(--muted);
-  margin:1rem 0 0;
-}
 .hours-details{
   margin-top:.6rem;
   color:var(--muted);
@@ -534,4 +531,21 @@ body.modal-open{overflow:hidden}
 
 #map .leaflet-control-container {
   position: static;
+}
+
+
+/* Message lorsqu'une catégorie de galerie n'a pas encore d'images */
+.gallery-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 2rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, .025);
+  color: var(--muted);
+  text-align: center;
+}
+
+.gallery-empty strong {
+  color: var(--text);
 }

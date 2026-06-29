@@ -1,1 +1,22 @@
-const SERVICES=[{category:'Coiffure femme',items:[{name:'Tresses classiques',price:'À partir de 20 $',duration:'2 à 4 h'},{name:'Brushing',price:'À partir de 10 $',duration:'45 min'},{name:'Soin capillaire',price:'À partir de 15 $',duration:'1 h'}]},{category:'Manucure & pédicure',items:[{name:'Pose simple',price:'À partir de 10 $',duration:'45 min'},{name:'Gel',price:'À partir de 18 $',duration:'1 h 30'},{name:'Nail art',price:'Sur devis',duration:'Selon modèle'}]},{category:'Coiffure homme',items:[{name:'Coupe classique',price:'À partir de 5 $',duration:'30 min'},{name:'Dégradé',price:'À partir de 7 $',duration:'40 min'}]}];
+const SERVICES=[{
+    category:'Coiffure femme',
+    items:[
+        {name:'Tresses classiques',
+            price:'À partir de 20 $',
+            duration:'2 à 4 h'},
+        {name:'Brushing',
+            price:'À partir de 10 $',
+            duration:'45 min'},
+        {name:'Soin capillaire',
+            price:'À partir de 15 $',
+            duration:'1 h'}]},
+            {category:'Manucure & pédicure',
+                items:[{name:'Pose simple',
+                    price:'À partir de 10 $',
+                    duration:'45 min'},
+        {name:'Gel',
+            price:'À partir de 18 $',
+            duration:'1 h 30'},
+        {name:'Nail art',
+            price:'Sur devis',
+            duration:'Selon modèle'}]}];
