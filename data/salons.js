@@ -43,13 +43,13 @@ const SALONS = [
     email: '',
     googleMapsUrl: 'https://maps.app.goo.gl/5Cyzsa9coMH7wuqN6',
     hours: {
-      monday: { open: '08:00', close: '18:30' },
-      tuesday: { open: '08:00', close: '18:30' },
-      wednesday: { open: '08:00', close: '18:30' },
-      thursday: { open: '08:00', close: '18:30' },
-      friday: { open: '08:00', close: '18:30' },
-      saturday: { open: '08:00', close: '18:30' },
-      sunday: { open: '13:00', close: '18:30' },
+      Monday: { open: '08:00', close: '18:30' },
+      Tuesday: { open: '08:00', close: '18:30' },
+      Wednesday: { open: '08:00', close: '18:30' },
+      Thursday: { open: '08:00', close: '18:30' },
+      Friday: { open: '08:00', close: '18:30' },
+      Saturday: { open: '08:00', close: '18:30' },
+      Sunday: { open: '13:00', close: '18:30' },
     }
   },
   {
