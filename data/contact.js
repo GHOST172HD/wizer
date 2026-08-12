@@ -1,5 +1,5 @@
 const SITE_CONTACT = {
-  brandName: 'Wizer',
+  brandName: 'WIZER',
   mainPhone: '+243820068211',
   mainWhatsapp: '243820068211',
   email: 'saintchristduga172@gmail.com',

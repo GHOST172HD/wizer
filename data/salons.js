@@ -16,7 +16,7 @@
   Donc lat = -4.32512 et lng = 15.31288.
 */
 const LOCATION_SETTINGS = {
-  defaultCenter: [-4.3421928, 15.2813896],
+  defaultCenter: [-4.347158431021283, 15.28376598585388],
   defaultZoom: 15,
   tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   tileAttribution: '&copy; OpenStreetMap contributors'
@@ -32,24 +32,24 @@ const SALONS = [
   {
     id: 'bandal',
     active: true,
-    name: 'Wizer — Bandal',
-    district: 'Bandalungwa',
-    address: '5091, avenue Kasa-Vubu, arrêt Bakayau, Bandalungwa, Kinshasa',
+    name: 'WIZER INSTITUT - Bandal',
+    district: 'Funa',
+    address: 'Nº 114, Rue Tumba, Quartier Bisengo, Commune de Bandalungwa, Kinshasa',
     city: 'Kinshasa',
-    lat: -4.3421928,
-    lng: 15.2813896,
+    lat: -4.347158431021283,
+    lng: 15.28376598585388,
     phone: '+243820068211',
     whatsapp: '243820068211',
-    email: 'saintchristduga172@gmail.com',
-    googleMapsUrl: 'https://maps.app.goo.gl/cvKPxRjjusKZ7qvY8',
+    email: '',
+    googleMapsUrl: 'https://maps.app.goo.gl/5Cyzsa9coMH7wuqN6',
     hours: {
-      monday: { open: '08:00', close: '18:00' },
-      tuesday: { open: '08:00', close: '18:00' },
-      wednesday: { open: '08:00', close: '18:00' },
-      thursday: { open: '08:00', close: '18:00' },
-      friday: { open: '08:00', close: '18:00' },
-      saturday: { open: '09:00', close: '17:00' },
-      sunday: null
+      monday: { open: '08:00', close: '18:30' },
+      tuesday: { open: '08:00', close: '18:30' },
+      wednesday: { open: '08:00', close: '18:30' },
+      thursday: { open: '08:00', close: '18:30' },
+      friday: { open: '08:00', close: '18:30' },
+      saturday: { open: '08:00', close: '18:30' },
+      sunday: { open: '13:00', close: '18:30' },
     }
   },
   {
