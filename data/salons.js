@@ -26,7 +26,6 @@ const LOCATION_SETTINGS = {
   IMPORTANT :
   - active: true  = le salon apparaît sur la carte, dans Contact et Réservation.
   - active: false = le salon reste enregistré mais est ignoré partout.
-  Cela évite qu'une adresse d'exemple soit choisie comme "salon le plus proche".
 */
 const SALONS = [
   {

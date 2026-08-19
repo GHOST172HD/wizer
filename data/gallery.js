@@ -115,6 +115,20 @@ const GALLERY_ITEMS = [
     collectionKey: 'manucure',
     viewer: 'collection',
   },
+  {
+    id: 'pedicure-1',
+    src: 'assets/images/galerie/pied3.webp',
+    category: 'pedicure',
+    collectionKey: 'pedicure',
+    viewer: 'collection',
+  },
+  {
+    id: 'pedicure-2',
+    src: 'assets/images/galerie/looks-04.webp',
+    category: 'pedicure',
+    collectionKey: 'pedicure',
+    viewer: 'collection',
+  },
 
   {
     id: 'soins-01',
@@ -126,6 +140,34 @@ const GALLERY_ITEMS = [
   {
     id: 'soins-02',
     src: 'assets/images/galerie/soins-02.webp',
+    category: 'soins',
+    collectionKey: 'soins',
+    viewer: 'collection',
+  },
+  {
+    id: 'soins-03',
+    src: 'assets/images/galerie/soinstout.webp',
+    category: 'soins',
+    collectionKey: 'soins',
+    viewer: 'collection',
+  },
+  {
+    id: 'soins-04',
+    src: 'assets/images/galerie/soinsjamb.webp',
+    category: 'soins',
+    collectionKey: 'soins',
+    viewer: 'collection',
+  },
+  {
+    id: 'soins-05',
+    src: 'assets/images/galerie/soinpied.webp',
+    category: 'soins',
+    collectionKey: 'soins',
+    viewer: 'collection',
+  },
+  {
+    id: 'soins-06',
+    src: 'assets/images/services/Soins.webp',
     category: 'soins',
     collectionKey: 'soins',
     viewer: 'collection',

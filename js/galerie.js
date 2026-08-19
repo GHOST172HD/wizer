@@ -8,7 +8,6 @@ const labels = {
   manucure: 'Manucure',
   pedicure: 'Pédicure',
   soins: 'Soins',
-  'avant-apres': 'Avant / Après'
 };
 
 let currentFilter = 'all';
@@ -254,7 +253,7 @@ if (socialGrid) {
       <article class="social-card">
         <h3>${escapeHTML(item.title || 'Publication')}</h3>
         <div class="embed-placeholder">
-          Publication indisponible. Vérifie que le lien est public et correctement écrit.
+          Publication indisponible verif que ta bien check le lien.
         </div>
       </article>
     `;

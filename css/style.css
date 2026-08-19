@@ -1,4 +1,3 @@
-
 :root{
   --bg:#070509;
   --bg-2:#120914;
@@ -548,4 +547,93 @@ body.modal-open{overflow:hidden}
 
 .gallery-empty strong {
   color: var(--text);
+}
+
+/* =========================================================
+   NOUVEAU STYLE : GALERIE EN ALBUMS MOSAÏQUE (AJOUTÉ ICI)
+========================================================= */
+
+/* Surcharge sécurisée pour la vue Mosaïque */
+#gallery-grid.masonry-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: 20px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Design de la carte d'album */
+.album-card {
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    grid-row-end: span 18; /* Hauteur de base dans la mosaïque */
+}
+
+.album-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--muted);
+}
+
+/* Le conteneur visuel (qui gère 1 ou 2 images côte à côte) */
+.album-card__visual {
+    display: flex;
+    gap: 2px; /* L'espace entre les deux photos de tresses */
+    height: 250px;
+    width: 100%;
+    background: #000;
+    overflow: hidden;
+}
+
+.album-card__visual img {
+    flex: 1; /* Permet aux deux images de prendre 50% de l'espace chacune */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Textes de la carte */
+.album-card__info {
+    padding: 1.2rem;
+    background: var(--surface-2);
+    border-top: 1px solid var(--line);
+}
+
+.album-card__info .eyebrow {
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.album-card__info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+/* Tailles spéciales pour la mosaïque */
+.album-card.tall-composite { 
+    grid-row-end: span 22; 
+}
+.album-card.tall-composite .album-card__visual { 
+    height: 320px; /* Plus haut pour la vue composite */
+}
+
+/* Responsivité Mobile */
+@media (max-width: 699px) {
+    #gallery-grid.masonry-layout {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+    }
+    .album-card {
+        grid-row-end: auto !important;
+    }
+    .album-card__visual {
+        height: 280px;
+    }
 }

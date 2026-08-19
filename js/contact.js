@@ -16,7 +16,7 @@ if (contactMain) {
     <article class="card contact-card">
       <h3>Email</h3>
       <p>${SITE_CONTACT.email}</p>
-      <a class="text-link" href="mailto:${SITE_CONTACT.email}">Envoyer un email</a>
+      <a class="button" href="mailto:${SITE_CONTACT.email}">Envoyer un email</a>
     </article>
     <article class="card contact-card">
       <h3>Réseaux sociaux</h3>

@@ -32,7 +32,7 @@ function createMap() {
   }
 
   if (typeof L === 'undefined') {
-    setStatus('La bibliothèque de carte ne s’est pas chargée. Vérifie ta connexion Internet.', 'error');
+    setStatus('La carte ne s’est pas chargée. Vérifiez votre connexion Internet.', 'error');
     console.error('Leaflet (L) est introuvable.');
     return false;
   }
