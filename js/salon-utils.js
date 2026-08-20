@@ -75,7 +75,7 @@ function getOpenStatus(salon, date = new Date()) {
     const next = findNextOpening(salon, date);
     return {
       open: false,
-      text: next ? `Fermé · ouvre ${next.day} à ${formatHour(next.hour)}` : 'Horaires à confirmer'
+      text: next ? `Fermé · ouvre ${next.day} à ${formatHour(next.hour)}` : ''
     };
   }
 
@@ -100,7 +100,7 @@ function getOpenStatus(salon, date = new Date()) {
   const next = findNextOpening(salon, date);
   return {
     open: false,
-    text: next ? `Fermé · ouvre ${next.day} à ${formatHour(next.hour)}` : 'Horaires à confirmer'
+    text: next ? `Fermé · ouvre ${next.day} à ${formatHour(next.hour)}` : ''
   };
 }
 

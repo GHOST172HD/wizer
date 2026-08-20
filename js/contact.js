@@ -21,11 +21,10 @@ if (contactMain) {
     <article class="card contact-card">
       <h3>Réseaux sociaux</h3>
       <p> </p>
-      ${socialLink('Instagram', SITE_CONTACT.instagramUrl)}
+      <a class="button button-dark":${socialLink('Instagram', SITE_CONTACT.instagramUrl)}</a>
       <p> </p>
-      ${socialLink('TikTok', SITE_CONTACT.tiktokUrl)}
+      <a class="button button-dark":${socialLink('TikTok', SITE_CONTACT.tiktokUrl)}</a>
       <p> </p>
-      ${socialLink('Facebook', SITE_CONTACT.facebookUrl)}
     </article>
   `;
 }
@@ -43,8 +42,8 @@ if (contactSalons) {
         <p class="${status.open ? 'open' : 'closed'}">${status.text}</p>
         <p class="salon-meta">Téléphone : ${salon.phone}</p>
         <div class="actions">
-          <a class="text-link" href="${whatsappHref(salon.whatsapp, `Bonjour, je souhaite contacter ${salon.name}.`)}" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="text-link" href="${directionsUrl(salon)}" target="_blank" rel="noopener">Itinéraire</a>
+          <a class="button" href="${whatsappHref(salon.whatsapp, `Bonjour, je souhaite contacter ${salon.name}.`)}" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="button" href="${directionsUrl(salon)}" target="_blank" rel="noopener">Itinéraire</a>
         </div>
       </article>
     `;

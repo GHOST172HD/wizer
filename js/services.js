@@ -5,4 +5,4 @@ if(root){root.innerHTML=SERVICES.map(group=>`<section class="service-group">
         <h3>${item.name}</h3>
         <p>${item.price}</p>
         <p class="salon-meta">Durée : ${item.duration}</p>
-        <a class="text-link" href="reservation.html?service=${encodeURIComponent(item.name)}">Réserver</a></article>`).join('')}</div></section>`).join('');}
+        <a class="button" href="reservation.html?service=${encodeURIComponent(item.name)}">Réserver</a></article>`).join('')}</div></section>`).join('');}

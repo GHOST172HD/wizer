@@ -164,9 +164,9 @@ function salonCard(salon, closest = false) {
         <ul>${formatWeekHours(salon).map(line => `<li>${line}</li>`).join('')}</ul>
       </details>
       <div class="actions">
-        <a class="text-link" href="${directionsUrl(salon)}" target="_blank" rel="noopener">Google Maps</a>
-        <a class="text-link" href="${whatsappHref(salon.whatsapp, `Bonjour, je souhaite réserver au ${salon.name}.`)}" target="_blank" rel="noopener">WhatsApp</a>
-        <a class="text-link" href="reservation.html?salon=${encodeURIComponent(salon.id)}">Réserver</a>
+        <a class="button" href="${directionsUrl(salon)}" target="_blank" rel="noopener">Google Maps</a>
+        <a class="button button-light" href="${whatsappHref(salon.whatsapp, `Bonjour, je souhaite réserver au ${salon.name}.`)}" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="button button-outline" href="reservation.html?salon=${encodeURIComponent(salon.id)}">Réserver</a>
       </div>
     </article>
   `;

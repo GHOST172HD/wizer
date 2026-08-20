@@ -68,14 +68,31 @@ a{text-decoration:none;color:inherit}
   font-size:1.35rem;
   cursor:pointer
 }
-.main-menu{display:none;position:absolute;top:72px;left:0;right:0;background:rgba(14,9,15,.98);padding:1rem;border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.main-menu{display:none;
+  position:absolute;
+  top:72px;
+  left:0;
+  right:0;
+  background:rgba(14,9,15,.98);
+  padding:1rem;
+  border-bottom:1px solid var(--line);
+  box-shadow:var(--shadow)}
 .main-menu.open{display:flex;flex-direction:column;gap:.8rem}
 .main-menu a{padding:.55rem .25rem;color:var(--muted)}
 .main-menu .active{color:var(--text);font-weight:700}
 .button{
-  display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.82rem 1.15rem;
-  border:1px solid transparent;border-radius:999px;background:linear-gradient(135deg, var(--accent), var(--accent-2));
-  color:#fff;font-weight:700;cursor:pointer;transition:transform .2s ease,filter .2s ease, box-shadow .2s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  padding:.82rem 1.15rem;
+  border:1px solid transparent;
+  border-radius:999px;
+  background:linear-gradient(135deg, var(--accent), var(--accent-2));
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .2s ease,filter .2s ease, box-shadow .2s ease;
   box-shadow:0 8px 25px var(--accent-glow)
 }
 
@@ -93,6 +110,9 @@ a{text-decoration:none;color:inherit}
   color:#160d18;box-shadow:none}
 .button-small{min-height:40px;
   padding:.55rem .95rem}
+.button-dark{background:var(--text);
+  border-color:var(--text);
+  color:#fa89fa;box-shadow:none}
 .hero-grid,.two-cols,.location-layout,.split-callout{display:grid;
   gap:1.5rem;
   align-items:center}
