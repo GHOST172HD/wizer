@@ -30,6 +30,34 @@ const GALLERY_ITEMS = [
     collectionKey: 'coiffure-tresse',
     viewer: 'collection',
   },
+  {
+    id: 'coiffure-tresse-06',
+    src: 'assets/images/galerie/lokkat.webp',
+    category: 'coiffure-tresse',
+    collectionKey: 'coiffure-tresse',
+    viewer: 'collection',
+  },
+  {
+    id: 'coiffure-tresse-04',
+    src: 'assets/images/galerie/lookat.webp',
+    category: 'coiffure-tresse',
+    collectionKey: 'coiffure-tresse',
+    viewer: 'collection',
+  },
+  {
+    id: 'coiffure-tresse-03',
+    src: 'assets/images/galerie/lookat4.webp',
+    category: 'coiffure-tresse',
+    collectionKey: 'coiffure-tresse',
+    viewer: 'collection',
+  },
+  {
+    id: 'coiffure-tresse-09',
+    src: 'assets/images/galerie/looks-03.webp',
+    category: 'coiffure-tresse',
+    collectionKey: 'coiffure-tresse',
+    viewer: 'collection',
+  },
 
   {
     id: 'manucure-01',

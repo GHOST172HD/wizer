@@ -12,6 +12,9 @@ const SERVICES=[
         {name:'Pose perruque',
             price:'À partir de 40 $',
             duration:'45 min'},
+        {name:'Autre',
+            price:'À définir',
+            duration:'À définir'},
         {name:'Soin capillaire',
             price:'À partir de 15 $',
             duration:'1 h'}]
@@ -26,6 +29,9 @@ const SERVICES=[
     {
     category:'Manucure & Pédicure',
     items:[
+        {name:'Autre',
+            price:'À définir',
+            duration:'À définir'},
         {name:'Pose simple',
             price:'À partir de 10 $',
             duration:'45 min'},
@@ -44,6 +50,9 @@ const SERVICES=[
     {
     category: 'Maquillage & Cils',
     items:[
+        {name:'Autre',
+            price:'À définir',
+            duration:'À définir'},
         {name:'Maquillage jour simple',
             price:'À partir de 30 $',
             duration:'45 min',
