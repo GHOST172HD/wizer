@@ -1,3 +1,2 @@
 [build]
-  publish = "dist"
-  command = "make all"
+  publish = "."
