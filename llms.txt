@@ -1,0 +1,2 @@
+# Wizer
+Wizer est une application et un salon proposant des services de coiffure, de tresse, de manucure, de pédicure et de soins esthétiques.
