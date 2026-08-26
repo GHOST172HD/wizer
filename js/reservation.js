@@ -38,7 +38,7 @@ if (form) {
       `Date : ${data.get('date')}`,
       `Heure : ${data.get('time')}`,
       `Message : ${data.get('message') || 'Aucun'}`
-    ].join('\\n');
+    ].join('\n');
 
     const url = typeof whatsappHref === 'function'
       ? whatsappHref(targetWhatsapp, message)
