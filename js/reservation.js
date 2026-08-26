@@ -33,11 +33,16 @@ if (form) {
       '',
       `Nom : ${data.get('name')}`,
       `Téléphone : ${data.get('phone')}`,
+      '',
       `Salon : ${salon ? salon.name : data.get('salon')}`,
+      '',
       `Service : ${data.get('service')}`,
-      `Date : ${data.get('date')}`,
+      '',
+      `Date : ${data.get('date') ? data.get('date').split('-').reverse().join('/') : ''}`,
+      '',
       `Heure : ${data.get('time')}`,
-      `Message : ${data.get('message') || 'Aucun'}`
+      '',
+      `Message et précision : ${data.get('message') || 'Aucun'}`
     ].join('\n');
 
     const url = typeof whatsappHref === 'function'
