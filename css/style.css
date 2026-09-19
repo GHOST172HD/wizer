@@ -34,16 +34,25 @@ body {
 
 img { display: block; max-width: 100%; }
 a { text-decoration: none; color: inherit; }
-.container { width: min(100% - 2rem, 1180px); margin-inline: auto; }
-.section { padding: 4rem 0; }
+
+.container { width: min(100% - 2rem, 1180px);
+  margin-inline: auto; }
+
+  .section { padding: 4rem 0; }
+
 .section-soft { background: linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.01)); }
-.section-dark { background: linear-gradient(135deg, rgba(209,17,22,.12), rgba(104,8,11,.05)); color: var(--text); }
+
+.section-dark { background: linear-gradient(135deg, rgba(209,17,22,.12), rgba(104,8,11,.05));
+  color: var(--text); }
 
 .site-header {
-  position: sticky; top: 0; z-index: 1000;
-  background: rgba(8, 5, 5, 0.78);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(5, 5, 8, 0.78);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(14px);
+  border-radius: 20px;
 }
 
 .nav-wrap {
@@ -82,17 +91,25 @@ a { text-decoration: none; color: inherit; }
 .main-menu {
   display: none;
   position: absolute;
-  top: 72px;
-  left: 0;
-  right: 0;
-  background: rgba(15, 9, 9, 0.98);
+  top: 100px;
+  left: 10px;
+  right: 10px;
+  background: hsla(0, 23%, 5%, 0.925);
   padding: 1rem;
   border-bottom: 1px solid var(--line);
   box-shadow: var(--shadow);
+  border-radius: 20px;
 }
-.main-menu.open { display: flex; flex-direction: column; gap: .8rem; }
-.main-menu a { padding: .55rem .25rem; color: var(--muted); }
-.main-menu .active { color: var(--text); font-weight: 700; }
+
+.main-menu.open { display: flex;
+  flex-direction: column;
+  gap: .8rem; }
+
+.main-menu a { padding: .55rem .25rem;
+  color: var(--muted); }
+
+.main-menu .active { color: var(--text);
+  font-weight: 700; }
 
 .button {
   display: inline-flex;
@@ -109,6 +126,17 @@ a { text-decoration: none; color: inherit; }
   transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
   box-shadow: 0 8px 25px var(--accent-glow);
 }
+/* Cette classe ne fait plus l'animation par défaut */
+.button-bounce {
+  display: inline-flex !important;
+  position: relative !important;
+}
+
+/* L'animation se déclenche UNIQUEMENT quand le menu ajoute cette classe */
+.main-menu.open .button-bounce {
+  animation: bounce-top 1s ease-in-out both !important; /* Joué 1 seule fois (pas de infinite) */
+}
+
 
 .button:hover {
   transform: translateY(-2px);
@@ -275,7 +303,7 @@ code { background: rgba(255, 255, 255, 0.06); padding: .15rem .3rem; border-radi
 .gallery-modal__counter { display: none !important; }
 
 /* ------------------------------
-   Galerie focus / carousel
+Galerie focus / carousel
 ------------------------------ */
 body.modal-open { overflow: hidden; }
 .gallery-tile {
