@@ -30,13 +30,11 @@
         background:transparent;
         box-shadow:none}
     
-        .hero-grid{grid-template-columns:1.08fr .92fr;
-        min-height:68vh}
+    .hero-grid{grid-template-columns:1.08fr .92fr; min-height:68vh}
     
-        .location-layout{grid-template-columns:1.45fr .8fr;
-        align-items:start}
+    .location-layout{grid-template-columns:1.45fr .8fr; align-items:start}
     
-        .map{height:620px}
+    .map{height:620px}
     
     .split-heading,
     

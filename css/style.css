@@ -57,6 +57,9 @@ a { text-decoration: none; color: inherit; }
 .site-header {
   position: sticky;
   top: 10px;
+  left: 5px;
+  right: 5px;
+  width: calc(100% - 10px);
   z-index: 1000;
   background: rgba(5, 5, 8, 0.78);
   border-bottom: 1px solid var(--line);
