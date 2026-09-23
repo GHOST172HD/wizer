@@ -518,3 +518,28 @@ body.modal-open { overflow: hidden; }
   .album-card { grid-row-end: auto !important; }
   .album-card__visual { height: 280px; }
 }
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+button:focus,
+a:focus {
+    outline: none;
+}
+
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+
+img {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
