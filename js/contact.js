@@ -3,7 +3,7 @@ const contactSalons = document.querySelector('#contact-salons');
 
 function socialLink(label, url) {
   if (!url || url === '#') return '';
-  return `<a class="text-link" href="${url}" target="_blank" rel="noopener">${label}</a>`;
+  return `<a class="button button-dark" href="${url}" target="_blank" rel="noopener">${label}</a>`;
 }
 
 if (contactMain) {
@@ -16,15 +16,19 @@ if (contactMain) {
     <article class="card contact-card">
       <h3>Email</h3>
       <p>${SITE_CONTACT.email}</p>
-      <a class="button" href="mailto:${SITE_CONTACT.email}">Envoyer un email</a>
+      <a
+        class="button"
+        href="https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(SITE_CONTACT.email)}"
+        target="_blank"
+        rel="noopener"
+      >Envoyer un email</a>
     </article>
     <article class="card contact-card">
       <h3>Réseaux sociaux</h3>
-      <p> </p>
-      <a class="button button-dark":${socialLink('Instagram', SITE_CONTACT.instagramUrl)}</a>
-      <p> </p>
-      <a class="button button-dark":${socialLink('TikTok', SITE_CONTACT.tiktokUrl)}</a>
-      <p> </p>
+      <div class="actions">
+        ${socialLink('Instagram', SITE_CONTACT.instagramUrl)}
+        ${socialLink('TikTok', SITE_CONTACT.tiktokUrl)}
+      </div>
     </article>
   `;
 }

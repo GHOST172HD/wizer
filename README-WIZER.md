@@ -19,7 +19,7 @@ Ne les touche pas sauf si tu veux vraiment modifier le comportement.
 
 ```text
 js/
-├── galerie.js       → focus image, carousel, TikTok, Instagram placeholder
+├── galerie.js       → focus image, carousel, TikTok, Instagram et TikTok intégrés
 ├── localisation.js  → carte, distance, salon le plus proche
 ├── contact.js       → affichage de la page contact
 ├── reservation.js   → formulaire WhatsApp
@@ -634,9 +634,9 @@ assets/images/galerie/
 Exemple :
 
 ```text
-assets/images/galerie/tresses-01.jpg
-assets/images/galerie/nails-01.jpg
-assets/images/galerie/salon-01.jpg
+assets/images/galerie/tresses-01.webp
+assets/images/galerie/nails-01.webp
+assets/images/galerie/salon-01.webp
 ```
 
 Évite les noms avec espaces.
@@ -646,7 +646,6 @@ Correct :
 ```text
 tresses-01.jpg
 manucure-rose-01.jpg
-avant-apres-01.jpg
 ```
 
 À éviter :
@@ -664,12 +663,12 @@ Exemple :
 ```js
 {
   id: 'coiffure-01',
-  src: 'assets/images/galerie/look-01.svg',
+  src: 'assets/images/galerie/photo-01.webp',
   alt: 'Exemple de coiffure',
-  category: 'coiffure',
-  collectionKey: 'coiffure',
+  category: 'coiffure-tresse',
+  collectionKey: 'coiffure-tresse',
   viewer: 'collection',
-  title: 'Exemple de coiffure'
+  title: 'Exemple de coiffure / tresse'
 }
 ```
 
@@ -703,10 +702,10 @@ Exemple :
   id: 'coiffure-01',
   src: 'assets/images/galerie/coiffure-01.jpg',
   alt: 'Coiffure tressée',
-  category: 'coiffure',
-  collectionKey: 'coiffure',
+  category: 'coiffure-tresse',
+  collectionKey: 'coiffure-tresse',
   viewer: 'collection',
-  title: 'Coiffure tressée'
+  title: 'Coiffure / tresse'
 }
 ```
 
@@ -733,7 +732,7 @@ Exemple :
 ```js
 {
   id: 'salon-01',
-  src: 'assets/images/galerie/salon-01.jpg',
+  src: 'assets/images/galerie/salon-01.webp',
   alt: 'Intérieur du salon',
   category: 'soins',
   collectionKey: 'salon',
@@ -757,10 +756,9 @@ pas de navigation entre images
 Les catégories prévues sont :
 
 ```text
-coiffure
+coiffure-tresse
 manucure
 pedicure
-avant-apres
 soins
 ```
 
@@ -769,10 +767,9 @@ Ces noms doivent correspondre à ce qui existe dans `js/galerie.js`, dans le blo
 ```js
 const labels = {
   all: 'Tout',
-  coiffure: 'Coiffure',
+  'coiffure-tresse': 'Coiffure / Tresse',
   manucure: 'Manucure',
   pedicure: 'Pédicure',
-  'avant-apres': 'Avant / Après',
   soins: 'Soins'
 };
 ```
@@ -794,10 +791,9 @@ Donc :
 ```js
 const labels = {
   all: 'Tout',
-  coiffure: 'Coiffure',
+  'coiffure-tresse': 'Coiffure / Tresse',
   manucure: 'Manucure',
   pedicure: 'Pédicure',
-  'avant-apres': 'Avant / Après',
   soins: 'Soins',
   maquillage: 'Maquillage'
 };
@@ -1022,10 +1018,9 @@ const socialGrid = document.querySelector('#social-grid');
 ```js
 const labels = {
   all: 'Tout',
-  coiffure: 'Coiffure',
+  'coiffure-tresse': 'Coiffure / Tresse',
   manucure: 'Manucure',
   pedicure: 'Pédicure',
-  'avant-apres': 'Avant / Après',
   soins: 'Soins'
 };
 ```

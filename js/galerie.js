@@ -17,7 +17,7 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 function escapeHTML(value = '') {
-  return String(value).replace(/[&<>'"]/g, char => ({
+  return String(value ?? '').replace(/[&<>'"]/g, char => ({
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -41,12 +41,17 @@ function renderGallery(category = 'all') {
     return;
   }
 
-  galleryGrid.innerHTML = items.map(item => `
-    <button class="gallery-tile" type="button" data-gallery-id="${escapeHTML(item.id)}" aria-label="Agrandir ${escapeHTML(item.alt)}">
-      <img loading="lazy" src="${escapeHTML(item.src)}" alt="${escapeHTML(item.alt)}">
-      <span class="gallery-tile__tag">${item.viewer === '' ? '' : ''}</span>
-    </button>
-  `).join('');
+  galleryGrid.innerHTML = items.map(item => {
+    const alt = item.alt || '';
+    const tag = item.viewer === 'single' ? 'Focus' : 'Collection';
+
+    return `
+      <button class="gallery-tile" type="button" data-gallery-id="${escapeHTML(item.id)}" aria-label="Agrandir ${escapeHTML(alt)}">
+        <img loading="lazy" src="${escapeHTML(item.src)}" alt="${escapeHTML(alt)}">
+        <span class="gallery-tile__tag">${tag}</span>
+      </button>
+    `;
+  }).join('');
 }
 
 function getItemById(id) {
@@ -56,7 +61,7 @@ function getItemById(id) {
 function getLightbox(item) {
   if (!item) return [];
 
-  if (item.viewer === '') {
+  if (item.viewer === 'single') {
     return [item];
   }
 
@@ -114,7 +119,9 @@ function getModal() {
 }
 
 function imageMarkup(item) {
-  return item ? `<img src="${escapeHTML(item.src)}" alt="${escapeHTML(item.alt)}">` : '';
+  if (!item) return '';
+  const alt = item.alt || '';
+  return `<img src="${escapeHTML(item.src)}" alt="${escapeHTML(alt)}">`;
 }
 
 function renderLightbox() {
@@ -124,11 +131,14 @@ function renderLightbox() {
   const next = lightboxItems[(lightboxIndex + 1) % lightboxItems.length];
   const hasMany = lightboxItems.length > 1;
 
+  const currentAlt = current.alt || '';
+  const currentTitle = current.title || currentAlt;
+
   modal.querySelector('[data-gallery-center]').innerHTML = `
-    <img src="${escapeHTML(current.src)}" alt="${escapeHTML(current.alt)}">
+    <img src="${escapeHTML(current.src)}" alt="${escapeHTML(currentAlt)}">
     <figcaption>
-      <strong>${escapeHTML(current.title || current.alt)}</strong>
-      <span>${escapeHTML(labels[current.category] || current.category)}</span>
+      <strong>${escapeHTML(currentTitle)}</strong>
+      <span>${escapeHTML(labels[current.category] || current.category || '')}</span>
     </figcaption>
   `;
 
