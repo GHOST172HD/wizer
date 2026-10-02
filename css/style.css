@@ -101,7 +101,30 @@ a { text-decoration: none; color: inherit; }
   border-radius: 14px;
   font-size: 1.35rem;
   cursor: pointer;
+  position: relative;
+  padding: 0;
 }
+
+.menu-toggle .bar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--text);
+  transform: translate(-50%, calc(-50% + var(--ty, 0px)));
+  transition: transform .28s ease, opacity .2s ease, background-color .28s ease;
+}
+
+.menu-toggle .bar:nth-child(1) { --ty: -7px; }
+.menu-toggle .bar:nth-child(2) { --ty: 0px; }
+.menu-toggle .bar:nth-child(3) { --ty: 7px; }
+
+.menu-toggle.active .bar { background: var(--accent); }
+.menu-toggle.active .bar:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
+.menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+.menu-toggle.active .bar:nth-child(3) { transform: translate(-50%, -50%) rotate(-45deg); }
 
 .main-menu {
   display: none;
