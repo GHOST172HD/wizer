@@ -143,6 +143,15 @@ a { text-decoration: none; color: inherit; }
   flex-direction: column;
   gap: .8rem; }
 
+/* L'animation d'entrée du menu : déclenchée à l'ouverture (.open) sur mobile/tablette (<980px), une seule fois.
+   Limitée à ce breakpoint pour ne jamais se rejouer sur le menu desktop, qui reste affiché en permanence
+   et n'est pas piloté par .open (voir responsive.css, @media (min-width:980px)). */
+@media (max-width: 979.98px) {
+  .main-menu.open {
+    animation: slide-in-elliptic-bottom-fwd .7s cubic-bezier(.25, .46, .45, .94) both;
+  }
+}
+
 .main-menu a { padding: .55rem .25rem;
   color: var(--muted); }
 
