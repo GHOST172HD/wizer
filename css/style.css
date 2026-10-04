@@ -326,6 +326,7 @@ h3 { margin: .55rem 0 .3rem; color: var(--text); }
 .open { color: var(--success); font-weight: 800; }
 .closed { color: var(--danger); font-weight: 800; }
 .status-message { min-height: 1.4rem; color: var(--muted); }
+.map-tile-status { margin-top: .6rem; font-size: .9rem; }
 
 .form-wrap { max-width: 800px; }
 .booking-form { display: grid; gap: 1rem; }

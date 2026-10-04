@@ -2,6 +2,7 @@ const mapElement = document.querySelector('#map');
 const list = document.querySelector('#salons-list');
 const locateButton = document.querySelector('#locate-button');
 const statusMessage = document.querySelector('#location-status');
+const mapTileStatus = document.querySelector('#map-tile-status');
 
 let map = null;
 let userMarker = null;
@@ -15,6 +16,19 @@ function setStatus(message, type = '') {
   if (!statusMessage) return;
   statusMessage.textContent = message;
   statusMessage.dataset.status = type;
+}
+
+function setMapTileStatus(message) {
+  if (!mapTileStatus) return;
+  if (!message) {
+    mapTileStatus.hidden = true;
+    mapTileStatus.textContent = '';
+    mapTileStatus.removeAttribute('data-status');
+    return;
+  }
+  mapTileStatus.hidden = false;
+  mapTileStatus.textContent = message;
+  mapTileStatus.dataset.status = 'error';
 }
 
 function validActiveSalons() {
@@ -54,11 +68,42 @@ function createMap() {
     attributionControl: true
   }).setView(center, zoom);
 
-  L.tileLayer(LOCATION_SETTINGS.tileUrl, {
+  const tileLayer = L.tileLayer(LOCATION_SETTINGS.tileUrl, {
     maxZoom: 19,
-    attribution: LOCATION_SETTINGS.tileAttribution,
-    crossOrigin: true
+    attribution: LOCATION_SETTINGS.tileAttribution
   }).addTo(map);
+
+  // Si une tuile échoue à charger (connexion lente/instable), on retente une seule fois
+  // avant d'abandonner, pour éviter des cases grises qui restent bloquées sur la carte.
+  // Si plusieurs tuiles échouent malgré le retry (serveur de tuiles temporairement
+  // indisponible), on le signale sans bloquer le reste de la page : la liste des
+  // salons et les liens Google Maps / WhatsApp restent utilisables normalement.
+  let tilesFailedAfterRetry = 0;
+  tileLayer.on('tileerror', event => {
+    const tile = event.tile;
+    if (!tile) return;
+
+    if (tile.dataset.wizerRetried === '1') {
+      tilesFailedAfterRetry += 1;
+      if (tilesFailedAfterRetry >= 3) {
+        setMapTileStatus('La carte interactive est momentanément indisponible. Utilisez la liste des salons ci-dessous ou le lien Google Maps pour vous y rendre.');
+      }
+      return;
+    }
+
+    tile.dataset.wizerRetried = '1';
+    const base = tile.src.split('?')[0];
+    window.setTimeout(() => {
+      tile.src = `${base}?retry=${Date.now()}`;
+    }, 1200);
+  });
+
+  tileLayer.on('tileload', () => {
+    if (tilesFailedAfterRetry > 0) {
+      tilesFailedAfterRetry = 0;
+      setMapTileStatus(null);
+    }
+  });
 
   map.whenReady(() => {
     window.setTimeout(() => map.invalidateSize(), 100);
@@ -314,7 +359,26 @@ function geolocationErrorMessage(error) {
   }
 }
 
-function locateUser() {
+function getPosition(options) {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+}
+
+async function checkGeolocationPermission() {
+  // Pré-vérification facultative : si le navigateur la supporte et que la permission est
+  // déjà refusée, on le dit tout de suite au lieu d'attendre un nouveau délai pour rien.
+  if (!navigator.permissions?.query) return null;
+
+  try {
+    const status = await navigator.permissions.query({ name: 'geolocation' });
+    return status.state; // 'granted' | 'denied' | 'prompt'
+  } catch {
+    return null; // API non supportée pour 'geolocation' (ex. Safari) : on continue normalement.
+  }
+}
+
+async function locateUser() {
   if (!navigator.geolocation) {
     setStatus('La géolocalisation n’est pas disponible sur cet appareil.', 'error');
     return;
@@ -328,64 +392,96 @@ function locateUser() {
     return;
   }
 
+  const permissionState = await checkGeolocationPermission();
+  if (permissionState === 'denied') {
+    setStatus('Localisation refusée. Autorise la position dans les réglages du navigateur puis réessaie.', 'error');
+    return;
+  }
+
   locateButton?.setAttribute('disabled', '');
   if (locateButton) locateButton.textContent = 'Recherche en cours…';
   setStatus('Recherche de votre position…', 'loading');
 
-  navigator.geolocation.getCurrentPosition(
-    position => {
-      const latitude = Number(position.coords.latitude);
-      const longitude = Number(position.coords.longitude);
-      const accuracy = Number(position.coords.accuracy);
-
-      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-        setStatus('La position reçue est invalide. Réessaie.', 'error');
-        return;
-      }
-
-      showUserPosition(latitude, longitude, accuracy);
-
-      const sortedSalons = salons
-        .map(salon => ({
-          ...salon,
-          distance: haversine(
-            latitude,
-            longitude,
-            Number(salon.lat),
-            Number(salon.lng)
-          )
-        }))
-        .sort((a, b) => a.distance - b.distance);
-
-      const nearest = sortedSalons[0];
-
-      renderSalonList(sortedSalons);
-      highlightNearestSalon(nearest);
-      frameUserAndNearest(latitude, longitude, nearest);
-
-      const accuracyText = Number.isFinite(accuracy)
-        ? ` · précision GPS ± ${Math.round(accuracy)} m`
-        : '';
-
-      setStatus(
-        `Salon le plus proche : ${nearest.name}, à environ ${nearest.distance.toFixed(1)} km${accuracyText}.`,
-        'success'
-      );
-    },
-    error => {
-      setStatus(geolocationErrorMessage(error), 'error');
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 30000
-    }
-  );
-
-  window.setTimeout(() => {
+  // Filet de sécurité uniquement : si aucune des deux tentatives ne répond jamais
+  // (cas anormal), le bouton se réactive quand même au lieu de rester bloqué.
+  let settled = false;
+  const safetyTimer = window.setTimeout(() => {
+    if (settled) return;
+    settled = true;
     locateButton?.removeAttribute('disabled');
     if (locateButton) locateButton.textContent = 'Actualiser ma position';
-  }, 16000);
+  }, 22000);
+
+  const finishAttempt = () => {
+    if (settled) return;
+    settled = true;
+    window.clearTimeout(safetyTimer);
+    locateButton?.removeAttribute('disabled');
+    if (locateButton) locateButton.textContent = 'Actualiser ma position';
+  };
+
+  let position;
+  try {
+    position = await getPosition({ enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+  } catch (firstError) {
+    if (firstError?.code === firstError?.PERMISSION_DENIED) {
+      finishAttempt();
+      setStatus(geolocationErrorMessage(firstError), 'error');
+      return;
+    }
+
+    // Le GPS précis a expiré ou est indisponible (fréquent en intérieur ou sur ordinateur) :
+    // on retente une fois avec une position approximative, souvent plus rapide à obtenir.
+    setStatus('Signal GPS faible : nouvelle tentative avec une position approximative…', 'loading');
+
+    try {
+      position = await getPosition({ enableHighAccuracy: false, timeout: 10000, maximumAge: 0 });
+    } catch (secondError) {
+      finishAttempt();
+      setStatus(geolocationErrorMessage(secondError), 'error');
+      return;
+    }
+  }
+
+  finishAttempt();
+
+  const latitude = Number(position.coords.latitude);
+  const longitude = Number(position.coords.longitude);
+  const accuracy = Number(position.coords.accuracy);
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    setStatus('La position reçue est invalide. Réessaie.', 'error');
+    return;
+  }
+
+  showUserPosition(latitude, longitude, accuracy);
+
+  const sortedSalons = salons
+    .map(salon => ({
+      ...salon,
+      distance: haversine(
+        latitude,
+        longitude,
+        Number(salon.lat),
+        Number(salon.lng)
+      )
+    }))
+    .sort((a, b) => a.distance - b.distance);
+
+  const nearest = sortedSalons[0];
+
+  renderSalonList(sortedSalons);
+  highlightNearestSalon(nearest);
+  frameUserAndNearest(latitude, longitude, nearest);
+
+  const accuracyText = Number.isFinite(accuracy)
+    ? ` · précision GPS ± ${Math.round(accuracy)} m`
+    : '';
+
+  setStatus(
+    `Salon le plus proche : ${nearest.name}, à environ ${nearest.distance.toFixed(1)} km${accuracyText}.`,
+    'success'
+  );
 }
 
 if (list) {
