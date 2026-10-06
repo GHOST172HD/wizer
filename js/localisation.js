@@ -31,12 +31,85 @@ function setMapTileStatus(message) {
   mapTileStatus.dataset.status = 'error';
 }
 
+// Fournisseurs de tuiles, du principal au filet de secours. Esri "Light Gray Canvas"
+// est utilisé en premier : contrairement à tile.openstreetmap.org (serveur gratuit mais
+// explicitement déconseillé par OpenStreetMap pour un usage commercial en production, et
+// qui peut bloquer l'accès sans prévenir en cas de pic de charge), ce fond de carte Esri
+// est prévu pour l'affichage public de sites comme celui-ci, sans clé API. En dernier
+// recours uniquement, si Esri devient indisponible, on retombe sur OpenStreetMap.
+const TILE_PROVIDERS = [
+  {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 16,
+    attribution: '&copy; <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+  },
+  {
+    url: LOCATION_SETTINGS.tileUrl,
+    maxZoom: 19,
+    attribution: LOCATION_SETTINGS.tileAttribution
+  }
+];
+
 function validActiveSalons() {
   const activeSalons = typeof getActiveSalons === 'function'
     ? getActiveSalons()
     : (Array.isArray(SALONS) ? SALONS.filter(salon => salon.active !== false) : []);
 
   return activeSalons.filter(hasCoordinates);
+}
+
+let activeTileLayer = null;
+let tileProviderIndex = 0;
+
+// Installe le fournisseur de tuiles à l'index donné. Si une tuile échoue à charger, on
+// retente une seule fois (connexion lente/instable). Si plusieurs tuiles échouent malgré
+// le retry, le fournisseur actif est considéré indisponible : on bascule automatiquement
+// sur le suivant dans TILE_PROVIDERS. Seul l'épuisement de tous les fournisseurs affiche
+// un message, sans jamais bloquer le reste de la page (liste des salons, Google Maps…).
+function attachTileProvider(index) {
+  const provider = TILE_PROVIDERS[index];
+  if (!provider || !map) return;
+
+  if (activeTileLayer) {
+    activeTileLayer.remove();
+  }
+
+  tileProviderIndex = index;
+  let tilesFailedAfterRetry = 0;
+
+  activeTileLayer = L.tileLayer(provider.url, {
+    maxZoom: provider.maxZoom,
+    attribution: provider.attribution
+  }).addTo(map);
+
+  activeTileLayer.on('tileerror', event => {
+    const tile = event.tile;
+    if (!tile) return;
+
+    if (tile.dataset.wizerRetried === '1') {
+      tilesFailedAfterRetry += 1;
+      if (tilesFailedAfterRetry >= 3) {
+        const nextIndex = tileProviderIndex + 1;
+        if (nextIndex < TILE_PROVIDERS.length) {
+          attachTileProvider(nextIndex);
+        } else {
+          setMapTileStatus('La carte interactive est momentanément indisponible. Utilisez la liste des salons ci-dessous ou le lien Google Maps pour vous y rendre.');
+        }
+      }
+      return;
+    }
+
+    tile.dataset.wizerRetried = '1';
+    const base = tile.src.split('?')[0];
+    window.setTimeout(() => {
+      tile.src = `${base}?retry=${Date.now()}`;
+    }, 1200);
+  });
+
+  activeTileLayer.on('tileload', () => {
+    tilesFailedAfterRetry = 0;
+    setMapTileStatus(null);
+  });
 }
 
 function createMap() {
@@ -68,42 +141,7 @@ function createMap() {
     attributionControl: true
   }).setView(center, zoom);
 
-  const tileLayer = L.tileLayer(LOCATION_SETTINGS.tileUrl, {
-    maxZoom: 19,
-    attribution: LOCATION_SETTINGS.tileAttribution
-  }).addTo(map);
-
-  // Si une tuile échoue à charger (connexion lente/instable), on retente une seule fois
-  // avant d'abandonner, pour éviter des cases grises qui restent bloquées sur la carte.
-  // Si plusieurs tuiles échouent malgré le retry (serveur de tuiles temporairement
-  // indisponible), on le signale sans bloquer le reste de la page : la liste des
-  // salons et les liens Google Maps / WhatsApp restent utilisables normalement.
-  let tilesFailedAfterRetry = 0;
-  tileLayer.on('tileerror', event => {
-    const tile = event.tile;
-    if (!tile) return;
-
-    if (tile.dataset.wizerRetried === '1') {
-      tilesFailedAfterRetry += 1;
-      if (tilesFailedAfterRetry >= 3) {
-        setMapTileStatus('La carte interactive est momentanément indisponible. Utilisez la liste des salons ci-dessous ou le lien Google Maps pour vous y rendre.');
-      }
-      return;
-    }
-
-    tile.dataset.wizerRetried = '1';
-    const base = tile.src.split('?')[0];
-    window.setTimeout(() => {
-      tile.src = `${base}?retry=${Date.now()}`;
-    }, 1200);
-  });
-
-  tileLayer.on('tileload', () => {
-    if (tilesFailedAfterRetry > 0) {
-      tilesFailedAfterRetry = 0;
-      setMapTileStatus(null);
-    }
-  });
+  attachTileProvider(0);
 
   map.whenReady(() => {
     window.setTimeout(() => map.invalidateSize(), 100);
@@ -186,10 +224,25 @@ function createSalonMarkers() {
   }
 }
 
+// La distance vient du calcul haversine (ligne droite, "à vol d'oiseau") appliqué à la
+// position GPS brute du navigateur. Cette position a elle-même une marge d'erreur
+// (`accuracyMeters`, fournie par l'API de géolocalisation) : l'afficher à côté de la
+// distance évite de donner une fausse impression de précision (ex. "0.1 km" alors que
+// la position peut être incertaine de plusieurs dizaines ou centaines de mètres), et
+// précise que ce n'est pas une distance par la route.
+function formatDistanceWithMargin(distanceKm, accuracyMeters) {
+  if (!Number.isFinite(distanceKm)) return '';
+  const base = `${distanceKm.toFixed(1)} km à vol d'oiseau`;
+  if (!Number.isFinite(accuracyMeters) || accuracyMeters <= 0) return base;
+  const marginKm = accuracyMeters / 1000;
+  const marginText = marginKm < 1 ? marginKm.toFixed(2) : marginKm.toFixed(1);
+  return `${base} (marge d'erreur ≈ ± ${marginText} km, précision GPS ± ${Math.round(accuracyMeters)} m)`;
+}
+
 function salonCard(salon, closest = false) {
   const status = getOpenStatus(salon);
   const distance = Number.isFinite(salon.distance)
-    ? `<p class="salon-meta">Distance approximative : ${salon.distance.toFixed(1)} km</p>`
+    ? `<p class="salon-meta">Distance approximative : ${formatDistanceWithMargin(salon.distance, salon.distanceAccuracy)}</p>`
     : '';
 
   return `
@@ -464,7 +517,8 @@ async function locateUser() {
         longitude,
         Number(salon.lat),
         Number(salon.lng)
-      )
+      ),
+      distanceAccuracy: accuracy
     }))
     .sort((a, b) => a.distance - b.distance);
 
@@ -474,12 +528,8 @@ async function locateUser() {
   highlightNearestSalon(nearest);
   frameUserAndNearest(latitude, longitude, nearest);
 
-  const accuracyText = Number.isFinite(accuracy)
-    ? ` · précision GPS ± ${Math.round(accuracy)} m`
-    : '';
-
   setStatus(
-    `Salon le plus proche : ${nearest.name}, à environ ${nearest.distance.toFixed(1)} km${accuracyText}.`,
+    `Salon le plus proche : ${nearest.name}, à ${formatDistanceWithMargin(nearest.distance, accuracy)}.`,
     'success'
   );
 }
