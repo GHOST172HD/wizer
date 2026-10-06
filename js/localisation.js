@@ -232,11 +232,11 @@ function createSalonMarkers() {
 // précise que ce n'est pas une distance par la route.
 function formatDistanceWithMargin(distanceKm, accuracyMeters) {
   if (!Number.isFinite(distanceKm)) return '';
-  const base = `${distanceKm.toFixed(1)} km à vol d'oiseau`;
+  const base = ` environ ${distanceKm.toFixed(1)} km`;
   if (!Number.isFinite(accuracyMeters) || accuracyMeters <= 0) return base;
   const marginKm = accuracyMeters / 1000;
   const marginText = marginKm < 1 ? marginKm.toFixed(2) : marginKm.toFixed(1);
-  return `${base} (marge d'erreur ≈ ± ${marginText} km, précision GPS ± ${Math.round(accuracyMeters)} m)`;
+  return `${base}`;
 }
 
 function salonCard(salon, closest = false) {
