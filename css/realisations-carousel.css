@@ -1,0 +1,66 @@
+/*
+  Carrousel "Un aperçu de nos réalisations" (page d'accueil uniquement).
+  Bande d'images en boucle infinie, sur 2 lignes qui défilent en sens opposés.
+  Chaque image garde ses propres proportions : largeur commune, hauteur automatique.
+
+  Les 3 réglages à changer en premier sont les variables juste en dessous :
+  - --realisations-img-width : largeur de chaque image
+  - --realisations-gap       : distance entre deux images d'une même ligne
+  - --realisations-speed     : vitesse (durée d'un tour complet ; plus petit = plus rapide)
+*/
+.realisations-carousel {
+  --realisations-img-width: 200px;
+  --realisations-gap: 14px;
+  --realisations-speed: 36s;
+  --realisations-row-gap: 1rem;
+
+  margin-top: 1.6rem;
+  display: grid;
+  row-gap: var(--realisations-row-gap);
+  overflow: hidden;
+}
+
+.realisations-track {
+  display: flex;
+  align-items: flex-end;
+  width: max-content;
+  gap: var(--realisations-gap);
+  animation: realisations-scroll var(--realisations-speed) linear infinite;
+  will-change: transform;
+}
+
+/* Ligne 1 : vers la droite. Ligne 2 : vers la gauche (sens opposé) avec un léger
+   décalage de départ pour que les deux lignes ne soient jamais synchronisées. */
+.realisations-track--right { animation-direction: reverse; }
+.realisations-track--left  { animation-delay: -6s; }
+
+.realisations-carousel:hover .realisations-track {
+  animation-play-state: paused;
+}
+
+.realisations-track img {
+  width: var(--realisations-img-width);
+  height: auto;
+  flex: none;
+  display: block;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+@keyframes realisations-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Respecte la préférence système "réduire les animations" : la bande reste statique. */
+@media (prefers-reduced-motion: reduce) {
+  .realisations-track {
+    animation: none;
+  }
+}
+
+/* Sur très petit écran, images un peu plus compactes pour un meilleur rythme visuel. */
+@media (max-width: 420px) {
+  .realisations-carousel { --realisations-img-width: 150px; --realisations-gap: 10px; }
+}
