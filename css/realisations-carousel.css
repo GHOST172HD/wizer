@@ -34,10 +34,6 @@
 .realisations-track--right { animation-direction: reverse; }
 .realisations-track--left  { animation-delay: -6s; }
 
-.realisations-carousel:hover .realisations-track {
-  animation-play-state: paused;
-}
-
 .realisations-track img {
   width: var(--realisations-img-width);
   height: auto;
