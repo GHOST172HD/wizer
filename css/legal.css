@@ -1,0 +1,14 @@
+/* Présentation des pages d'informations Wizer, sans toucher au reste du site. */
+.legal-content { width: min(100% - 2rem, 880px); }
+.legal-section { padding-top: 0; }
+.legal-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.2rem, 3vw, 2rem); margin-bottom: 1.2rem; }
+.legal-card h2 { margin-top: 0; color: var(--text); font-size: clamp(1.15rem, 3vw, 1.45rem); }
+.legal-card p { margin-bottom: .85rem; }
+.legal-card p:last-child { margin-bottom: 0; }
+.legal-card a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.legal-facts { display: grid; gap: .65rem; margin: 1.2rem 0 0; }
+.legal-facts > div { padding-bottom: .65rem; border-bottom: 1px solid var(--line); }
+.legal-facts dt { font-weight: 700; color: var(--text); }
+.legal-facts dd { margin: .1rem 0 0; }
+.legal-pending { border-left: 3px solid var(--accent); background: rgba(209,17,22,.08); padding: .8rem 1rem; }
+.legal-updated { color: var(--muted); text-align: center; font-size: .9rem; }

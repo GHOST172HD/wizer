@@ -154,7 +154,7 @@ Le site public utilise désormais **https://wizer-kin.com/** sur **Cloudflare Pa
 
 `_headers` est compatible avec les fichiers statiques servis par Cloudflare Pages si placé dans le dossier de sortie. Il contient une CSP, `X-Frame-Options`, HSTS et `Permissions-Policy`. Vérifier les **réponses réellement servies** ; ne pas durcir la CSP sans tester les contenus externes et la carte.
 
-L'archive originale contient `.git/` et une sauvegarde `assets/logo/wizer.webp~`. Publier uniquement les ressources du site (HTML, CSS, JS, data, images et `_headers`) ; ne pas déployer des secrets ou historiques de code. La présence du dépôt **dans le ZIP local** ne prouve pas qu'il est accessible sur le site public.
+L'archive originale contient `.git/` et une sauvegarde `assets/logo/wizer.webp~`. Publier uniquement les ressources du site (HTML, CSS, JS, data, images et `_headers`) ; ne pas déployer des secrets ou historiques de code. Le test effectué le 15 octobre 2026 sur `https://wizer-kin.com/.git/HEAD` a **confirmé son exposition publique (HTTP 200)**. Corriger immédiatement le répertoire de publication avec `sh build-cloudflare.sh` et le dossier `dist/`, puis redéployer et revérifier.
 
 ## 11. Obligations et transparence avant publication
 

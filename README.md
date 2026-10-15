@@ -1,73 +1,55 @@
-# Wizer Beauty — site officiel
+# Wizer Institut — wizer-kin.com
 
-15 octobre 2026.  
-**Site public :** https://wizer-kin.com/  
-**Hébergement :** Cloudflare Pages, avec domaine personnalisé `wizer-kin.com`.
+Site vitrine statique (HTML/CSS/JavaScript) hébergé sur **Cloudflare Pages**.
+Rendez-vous : la page `reservation.html` prépare un message WhatsApp ; elle n'enregistre pas une réservation sur un serveur Wizer et ne la confirme pas automatiquement.
 
-Site vitrine **HTML, CSS, JavaScript** (sans serveur applicatif ni base de données). Les clients consultent les prestations et préparent une **demande** de rendez-vous qui s'ouvre dans WhatsApp : aucune réservation n'est automatiquement confirmée par le site.
+## Déploiement sécurisé sur Cloudflare Pages — IMPORTANT
 
-## Démarrage et mise en ligne
+Le 15 octobre 2026, `https://wizer-kin.com/.git/HEAD` renvoyait **HTTP 200**, prouvant que les métadonnées Git étaient exposées en production. La correction requiert un nouveau déploiement avec un dossier de sortie contrôlé ; `gitignore` et `robots.txt` ne protègent pas les anciens fichiers publiés.
 
-1. Ouvrir le dossier `wizer/` dans VS Code et utiliser Live Server pour l'aperçu local.
-2. Sur Cloudflare Pages, définir comme répertoire de sortie le dossier contenant `index.html`, `css/`, `js/`, `data/`, `assets/` et `_headers` (pour ce site sans compilation, la racine du site si elle correspond au dossier de publication).
-3. **Ne jamais déployer le dossier `.git/`**, ni les sauvegardes `*~`, archives ZIP ou fichiers secrets. Si Cloudflare Pages est relié directement à GitHub, contrôler le résultat du déploiement plutôt que confondre le dépôt et les fichiers servis publiquement.
-4. `_headers` est **compatible avec Cloudflare Pages** pour les actifs statiques, à condition de se trouver dans le dossier publié. Contrôler sa présence effective dans les réponses HTTP.
-5. `netlify.toml` est un reste de l'ancien hébergement ; Cloudflare Pages ne s'en sert pas pour configurer ce déploiement. Il peut être supprimé lors d'un nettoyage ultérieur.
+Si le projet Pages est relié à GitHub :
 
-Documentation de Cloudflare : https://developers.cloudflare.com/pages/configuration/headers/
+- **Build command :** `sh build-cloudflare.sh`
+- **Build output directory :** `dist`
+- **Root directory :** le dossier qui contient `index.html` et `build-cloudflare.sh` (habituellement la racine du dépôt).
 
-## Les 3 corrections utiles
+Le script prépare `dist/` avec seulement les pages et ressources publiques. **Il ne publie jamais `.git/`.** Ne publiez pas `.` comme output directory. Faites un nouveau déploiement de production après cette configuration.
 
-### 1. Domaine officiel dans `index.html` — à corriger maintenant
+Si le projet utilise le téléversement direct : envoyez uniquement le contenu de l'archive publique fournie, dont `index.html` est à la racine, et jamais l'archive source contenant `.git`.
 
-L'archive V4 contient encore `https://wizer-kin.netlify.app/` dans les métadonnées de l'accueil :
+**Vérification après déploiement (PowerShell)** :
 
-- `<link rel="canonical" ...>` ;
-- `<meta property="og:image" ...>` ;
-- `"image"` et `"url"` dans le JSON-LD de type `BeautySalon`.
+```powershell
+curl.exe -i https://wizer-kin.com/.git/HEAD
+curl.exe -i https://wizer-kin.com/mentions-legales.html
+curl.exe -i https://wizer-kin.com/confidentialite.html
+```
 
-Remplacer l'hôte `wizer-kin.netlify.app` par `wizer-kin.com` pour ces occurrences, **sans changer le chemin des images**. Vérifier la version en production après déploiement. Le domaine principal fonctionne en HTTPS.
+Le premier appel ne doit plus renvoyer HTTP 200 avec un hash Git. Il faut une réponse HTTP 404 ou 403. Les deux autres pages doivent fonctionner. Si un ancien contenu persiste, vérifier le domaine de production, le déploiement actif et le cache Cloudflare. Vérifier également `/.git/config`, `/.git/index`, `/.git/logs/HEAD` et `/.git/objects/` : ils ne doivent pas être publics.
 
-### 2. Informations légales et confidentialité — à préparer en priorité
+**En cas d'exposition de secrets dans l'historique Git**, les révoquer/renouveler : masquer `.git` ensuite ne rend pas un ancien secret déjà récupéré sûr.
 
-Ajouter et lier depuis le pied de page des pages commerciales :
+## Informations légales
 
-- **Mentions légales** : exploitant réel, adresse professionnelle, téléphone, e-mail et détails administratifs applicables (ne pas inventer de numéros RCCM ou autres identifiants).
-- **Confidentialité** : coordonnées saisies lors des réservations, finalité, usage de WhatsApp, destinataires, durée réelle de conservation, contact pour droits de consultation/suppression, plateformes externes et géolocalisation.
+- `mentions-legales.html` — coordonnées, propriétaire légal et hébergeur.
+- `confidentialite.html` — demandes WhatsApp, carte, services externes, droits et conservation.
+- Liens ajoutés au pied de page de toutes les pages ; avertissement ajouté au formulaire.
 
-Près du formulaire, expliquer : « Votre demande sera ouverte dans WhatsApp. Votre rendez-vous n'est confirmé qu'après réponse du salon. »
+**À remplir avant publication définitive** : identité juridique réelle de l'exploitant (et les identifiants d'immatriculation applicables), responsable de publication, durée effective de conservation des demandes WhatsApp. Ne pas inventer ces éléments.
 
-Référence RDC : Code du numérique, ordonnance-loi n° 23/010 du 13 mars 2023, notamment art. 52–53 (informations fournies aux clients) et règles applicables aux données personnelles.
+Le formulaire, la carte, les vidéos, le menu, les styles principaux et la galerie sont conservés. **Les vidéos TikTok/Instagram restent chargées comme avant à la demande de l'exploitant** ; l'information sur les traceurs dans la politique n'équivaut pas à un recueil de consentement si celui-ci est requis.
 
-### 3. Vidéos intégrées — correction ciblée
+## Carte — ce qu'il faut savoir
 
-`js/galerie.js` insère immédiatement les `iframe` TikTok/Instagram. Pour éviter les connexions et traceurs non essentiels avant le choix du visiteur, afficher une miniature locale et un bouton **Afficher la vidéo** qui ne crée l'iframe qu'après le clic. Garder le lien externe.
+Le code `js/localisation.js` utilise actuellement l'ancien fond Esri World Light Gray Canvas, dont la fin est annoncée **en décembre 2029**. Le code possède déjà un **repli OpenStreetMap** et la page conserve les coordonnées, la liste des salons et les liens Google Maps. La fin d'Esri ne signifie donc pas la fermeture du site. **Il n'y a pas de garantie absolue de service des tuiles OSM** et leur politique impose des conditions d'usage, particulièrement pour un site commercial. À terme, envisager un fournisseur professionnel compatible avec Leaflet (clé et quota) ou une solution vectorielle comme OpenFreeMap/MapLibre, après test en préproduction, plutôt qu'une migration précipitée sans tests.
 
-**Ne pas installer de bandeau cookies général par réflexe.** Le code propre à Wizer ne déclare pas de traceur marketing ou d'outil de statistiques. Vérifier séparément les fonctions éventuellement activées dans Cloudflare et les cookies effectivement déposés ; le régime de consentement dépend des traitements et des territoires concernés.
+## Structure
 
-## Fichiers à connaître
-
-| Modifier | Fichier |
-|---|---|
-| Téléphone, email, réseaux | `data/contact.js` |
-| Salons, horaires, position | `data/salons.js` |
-| Services et prix | `data/services.js` |
-| Photos et catégories | `data/gallery.js` |
-| TikTok/Instagram | `data/socials.js`, `js/galerie.js` |
-| Bouton/menu mobile | `js/main.js`, HTML, CSS |
-| Carte et géolocalisation | `js/localisation.js`, `js/salon-utils.js` |
-| Réservation via WhatsApp | `reservation.html`, `js/reservation.js` |
-| Sécurité HTTP sur Cloudflare Pages | `_headers` |
-| Métadonnées du domaine officiel | `index.html` |
-
-Le guide de maintenance détaillé est dans `README-WIZER.md`.
-
-## Ce qui n'est pas une urgence démontrée
-
-- `innerHTML` dans les pages Services/Contact/Carte utilise principalement des données locales que l'exploitant contrôle. Aucun chemin d'injection depuis les champs de visiteurs n'a été démontré ; améliorer ces insertions lorsqu'une entrée externe/dynamique est ajoutée.
-- Les réglages CSP de `_headers` peuvent être davantage resserrés, mais il faut d'abord vérifier leur application et tester les intégrations : ne pas risquer de casser le site sans preuve d'une faille.
-- Le fichier `.git` est présent **dans l'archive source**, mais son exposition sur le domaine public **n'a pas été établie**. Si sa publication était confirmée, ce serait un problème prioritaire.
-
-## Limite de la vérification
-
-Les principales pages du site public ont été consultées en HTTPS. La vérification des en-têtes HTTP réels, de la liste complète des cookies du navigateur et de la présence/absence de fichiers techniques non publics en ligne n'a pas pu être achevée avec les outils de consultation. Ces points ne doivent pas être présentés comme des failles confirmées.
+- `index.html`, `services.html`, `galerie.html`, `about.html`, `localisation.html`, `contact.html`, `reservation.html`
+- `mentions-legales.html`, `confidentialite.html`
+- `css/` : styles du site et style spécifique `legal.css`
+- `js/` : scripts des pages
+- `data/` : services, salons, liens de contact
+- `assets/` : images, logo, Leaflet local
+- `_headers` : en-têtes de sécurité Cloudflare Pages
+- `build-cloudflare.sh` : copie les seuls fichiers publics dans `dist/`
