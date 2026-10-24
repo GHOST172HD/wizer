@@ -191,3 +191,7 @@ Avant de publier une version sur Cloudflare Pages :
 - Politique des tuiles OSM : https://operations.osmfoundation.org/policies/tiles/
 
 *Guide vérifié sur les fichiers de la version 4. Les obligations légales peuvent dépendre de la clientèle, de la juridiction et de l'organisation réelle du salon.*
+
+
+### Carte fidélité Wizer
+Programme client + scanner agent dans `fidelity-files/` et API Cloudflare Pages Functions protégée dans `functions/`. Guide complet : `FIDELITY_SETUP.md`.

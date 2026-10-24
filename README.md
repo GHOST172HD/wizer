@@ -53,3 +53,9 @@ Le code `js/localisation.js` utilise actuellement l'ancien fond Esri World Light
 - `assets/` : images, logo, Leaflet local
 - `_headers` : en-têtes de sécurité Cloudflare Pages
 - `build-cloudflare.sh` : copie les seuls fichiers publics dans `dist/`
+
+## Nouveau : carte fidélité (Cloudflare Pages + D1)
+
+Deux interfaces : [carte client](fidelity-files/fidelity.html) et [scan agent](fidelity-files/scan-fidelity.html).
+
+**L'installation de la base, des secrets et des fonctions Cloudflare est obligatoire.** Suivre [FIDELITY_SETUP.md](FIDELITY_SETUP.md) avant publication ; aucune donnée client ne doit être placée dans un JSON public.

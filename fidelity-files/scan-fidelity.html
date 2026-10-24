@@ -1,0 +1,31 @@
+<!doctype html><html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Scan Fidelity | Wizer</title>
+<link rel="icon" href="../assets/icons/logo-wizer-neon-icon-w.webp" type="image/webp"><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="fidelity.css">
+<script src="scan-fidelity.js" defer></script></head>
+<body class="fid-body fid-agent">
+<header class="fid-header"><a href="../index.html"><img class="fid-logo" src="../assets/logo/wizer.webp" alt="Logo Wizer"></a><a class="fid-back" href="../index.html">← Retour au salon</a></header>
+<main class="fid-wrap fid-wrap-narrow">
+<div class="fid-intro"><p class="eyebrow">ESPACE RÉSERVÉ AU PERSONNEL</p><h1>SCAN <span>FIDELITY.</span></h1><p>Vérification des cartes clients et attribution des points.</p></div>
+<div id="message" class="fid-msg" role="status" aria-live="polite" hidden></div>
+<div id="loading" class="fid-loading" hidden aria-live="polite"><img src="../assets/logo/wizer.webp" alt="Vérification de l'accès"><p>Vérification de l'accès…</p></div>
+<section id="staff-auth" class="fid-card">
+ <form class="fid-form" id="staff-form"><h2>Accès privé</h2>
+ <label>Mot de passe du salon<input name="password" type="password" autocomplete="current-password" minlength="16" required></label>
+ <button class="fid-primary" type="submit">Déverrouiller le scanner</button></form>
+ <p class="fid-help">L'authentification est vérifiée sur le serveur Cloudflare, jamais dans le navigateur.</p>
+</section>
+<section id="staff-app" class="fid-card" hidden>
+ <div class="fid-dashboard-head"><h2>Scanner une carte</h2><button id="staff-logout" class="fid-outline" type="button">Quitter</button></div>
+ <div class="fid-controls"><button class="fid-primary" id="start-camera" type="button">Activer la caméra</button><button class="fid-outline" id="stop-camera" type="button" disabled>Arrêter</button></div>
+ <div id="reader" class="fid-camera"></div>
+ <p class="fid-help">Le navigateur demandera l'accès à la caméra. Vous pouvez aussi importer une photo du QR code si la caméra n'est pas disponible.</p>
+ <label class="fid-file">Lire une image QR <input type="file" id="scan-file" accept="image/*"></label>
+ <form class="fid-form" id="manual-form"><label>Code de carte (solution de secours)<input name="code" autocomplete="off" placeholder="WIZER-FIDELITY:V1:…" maxlength="100"></label><button type="submit" class="fid-outline">Vérifier le code</button></form>
+ <article id="customer" class="fid-customer" hidden><p class="eyebrow">CLIENT IDENTIFIÉ</p><h3 id="customer-name"></h3><p><strong id="customer-points"></strong> point(s) actuellement</p>
+  <p class="fid-help">Vérifiez que cette personne vient de terminer une prestation avant de confirmer. Un point maximum toutes les 10 minutes.</p>
+  <button class="fid-primary" id="award" type="button">Valider la prestation · +1 point</button>
+  <button class="fid-outline" id="cancel" type="button">Annuler</button>
+ </article>
+</section>
+</main><footer class="fid-footer"><a href="fidelity.html">Carte client</a><a href="../confidentialite.html">Confidentialité</a></footer>
+</body></html>
