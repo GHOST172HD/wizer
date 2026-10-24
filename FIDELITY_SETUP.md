@@ -1,5 +1,7 @@
 # Wizer Fidelity — installation, sécurité et exploitation
 
+> **Attention : cette version tourne sur Cloudflare Workers, pas Cloudflare Pages Functions.** Pour les instructions actuelles de liaison D1 et de déploiement, lis en priorité **`WORKERS_DEPLOYMENT.md`**. Les instructions « Pages → Bindings » ci-dessous étaient destinées à l’ancienne architecture et ne doivent pas être suivies pour le Worker `wizer`.
+
 ## Avant toute mise en ligne
 
 **Les deux pages sont développées, mais le système ne fonctionnera PAS tant que la base D1, les secrets et les Pages Functions ne sont pas configurés.** En l'absence des secrets, les API renvoient `503`, sans créer ni attribuer des points. Il s'agit d'une mesure volontaire de sécurité.

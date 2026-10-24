@@ -1,0 +1,21 @@
+{
+  "name": "wizer",
+  "main": "./worker/index.js",
+  "compatibility_date": "2026-10-24",
+  "keep_vars": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/fidelity",
+      "/api/fidelity/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "FIDELITY_DB",
+      "database_name": "wizer-fidelity",
+      "database_id": "REMPLACER_PAR_ID_D1"
+    }
+  ]
+}
