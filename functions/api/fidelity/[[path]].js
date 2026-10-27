@@ -1,4 +1,4 @@
-/* Wizer Fidelity — Cloudflare Pages Function. NE PAS copier dans le répertoire public. */
+/* Wizer Fidelity — API privée pour Cloudflare Workers. Ne jamais servir comme actif public. */
 const enc = new TextEncoder();
 const dec = new TextDecoder();
 const sec = () => Math.floor(Date.now() / 1000);
@@ -33,10 +33,13 @@ async function decipher(value,key){
   const [iv,body]=value.split('.');const k=await crypto.subtle.importKey('raw',unb64(key),'AES-GCM',false,['decrypt']);
   return dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(iv)},k,unb64(body)));
 }
-const CYCLES=600000;
-async function passwordHash(password,salt,pepper){
+// workerd limite PBKDF2 à 100 000 itérations. Chaque client mémorise son coût.
+const CYCLES=100000;
+const MAX_WORKER_CYCLES=100000;
+async function passwordHash(password,salt,pepper,iterations=CYCLES){
+  if(!Number.isSafeInteger(iterations)||iterations<1||iterations>MAX_WORKER_CYCLES)throw new Error('Coût PBKDF2 non pris en charge par ce Worker');
   const base=await crypto.subtle.importKey('raw',enc.encode(password+pepper),'PBKDF2',false,['deriveBits']);
-  return hex(await crypto.subtle.deriveBits({name:'PBKDF2',salt:unhex(salt),iterations:CYCLES,hash:'SHA-256'},base,256));
+  return hex(await crypto.subtle.deriveBits({name:'PBKDF2',salt:unhex(salt),iterations,hash:'SHA-256'},base,256));
 }
 function environment(env){
   return env.FIDELITY_DB && env.FIDELITY_ENC_KEY && env.FIDELITY_INDEX_KEY && env.FIDELITY_PEPPER && env.FIDELITY_ADMIN_PASSWORD
@@ -46,9 +49,31 @@ function sameOrigin(req){
   const origin=req.headers.get('Origin'),target=new URL(req.url);
   return !!origin && origin===target.origin && req.headers.get('content-type')?.toLowerCase().startsWith('application/json');
 }
+class RequestBodyError extends Error {
+  constructor(message,status){super(message);this.name='RequestBodyError';this.status=status;}
+}
 async function bodyJson(req){
-  if(Number(req.headers.get('content-length')||0)>8192)throw new Error('Requête trop volumineuse');
-  const s=await req.text();if(s.length>8192)throw new Error('Requête trop volumineuse');return JSON.parse(s||'{}');
+  // Contrôle en octets, même sans Content-Length (requête chunked).
+  const limit=8192,claimed=Number(req.headers.get('content-length'));
+  if(Number.isFinite(claimed)&&claimed>limit)throw new RequestBodyError('Requête trop volumineuse (maximum 8 Ko).',413);
+  const reader=req.body?.getReader();
+  if(!reader)throw new RequestBodyError('Corps JSON manquant.',400);
+  const chunks=[];let total=0;
+  try{
+    while(true){
+      const {done,value}=await reader.read();if(done)break;
+      total+=value.byteLength;
+      if(total>limit){await reader.cancel().catch(()=>{});throw new RequestBodyError('Requête trop volumineuse (maximum 8 Ko).',413);}
+      chunks.push(value);
+    }
+  }finally{reader.releaseLock();}
+  const all=new Uint8Array(total);let offset=0;
+  for(const chunk of chunks){all.set(chunk,offset);offset+=chunk.byteLength;}
+  let value;
+  try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(all));}
+  catch(_){throw new RequestBodyError('JSON invalide.',400);}
+  if(value===null||typeof value!=='object'||Array.isArray(value))throw new RequestBodyError('Le JSON doit être un objet.',400);
+  return value;
 }
 function getCookie(req,key){
   const item=(req.headers.get('Cookie')||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(key+'='));
@@ -124,11 +149,11 @@ export async function onRequest(ctx){
       await hit(ctx,'registration',ip);
       const eidx=await keyedIndex(email,ctx.env.FIDELITY_INDEX_KEY);
       if(await db.prepare('SELECT id FROM clients WHERE email_index=?').bind(eidx).first())return err('Ce compte existe déjà. Connectez-vous.',409);
-      const salt=hex(bytes(16)),hash=await passwordHash(pwd,salt,ctx.env.FIDELITY_PEPPER);
+      const salt=hex(bytes(16)),hash=await passwordHash(pwd,salt,ctx.env.FIDELITY_PEPPER,CYCLES);
       const [f,n,t,e]=await Promise.all([first,name,tel,email].map(x=>cipher(x,ctx.env.FIDELITY_ENC_KEY)));
       const customerId=id(), qr=hex(bytes(32));
-      await db.prepare(`INSERT INTO clients(id,email_index,prenom_chiffre,nom_chiffre,telephone_chiffre,email_chiffre,mot_de_passe_sel,mot_de_passe_empreinte,qr_code,cree_le) VALUES(?,?,?,?,?,?,?,?,?,?)`)
-        .bind(customerId,eidx,f,n,t,e,salt,hash,qr,sec()).run();
+      await db.prepare(`INSERT INTO clients(id,email_index,prenom_chiffre,nom_chiffre,telephone_chiffre,email_chiffre,mot_de_passe_sel,mot_de_passe_empreinte,mot_de_passe_iterations,qr_code,cree_le) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
+        .bind(customerId,eidx,f,n,t,e,salt,hash,CYCLES,qr,sec()).run();
       const set=await newSession(ctx,'client',customerId);
       return json({ok:true,account:{prenom:first,nom:name,telephone:tel,email,points:0,qr:'WIZER-FIDELITY:V1:'+qr}},201,{'Set-Cookie':set});
     }
@@ -140,7 +165,12 @@ export async function onRequest(ctx){
       const eidx=await keyedIndex(email,ctx.env.FIDELITY_INDEX_KEY);
       const row=await db.prepare('SELECT * FROM clients WHERE email_index=?').bind(eidx).first();
       const salt=row?.mot_de_passe_sel||'00'.repeat(16);
-      const computed=await passwordHash(pwd,salt,ctx.env.FIDELITY_PEPPER);
+      // Un ancien compte (600 000 cycles) doit utiliser « mot de passe oublié » :
+      // tenter son empreinte directement dans workerd provoquerait NotSupportedError.
+      if(row&&row.mot_de_passe_iterations>MAX_WORKER_CYCLES){
+        return err('Ce compte nécessite une réinitialisation du mot de passe. Utilisez « Mot de passe oublié ».',409);
+      }
+      const computed=await passwordHash(pwd,salt,ctx.env.FIDELITY_PEPPER,row?.mot_de_passe_iterations||CYCLES);
       if(!row||!secureCompare(computed,row.mot_de_passe_empreinte)){
         await hit(ctx,'client-login',key);await hit(ctx,'ip-login',contactIP(req));return err('Identifiants incorrects',401);
       }
@@ -153,6 +183,26 @@ export async function onRequest(ctx){
       return row?json({ok:true,account:await brief(ctx,row)}):err('Compte indisponible',404);
     }
     if(method==='POST'&&path==='logout')return json({ok:true},200,{'Set-Cookie':await dismissSession(ctx,'client')});
+    if(method==='POST'&&path==='account/delete'){
+      const current=await session(ctx,'client');if(!current)return err('Connexion requise pour supprimer le compte.',401);
+      const b=await bodyJson(req);
+      if(typeof b.password!=='string'||!validPass(b.password))return err('Mot de passe incorrect.',401);
+      const client=await db.prepare('SELECT * FROM clients WHERE id=?').bind(current.client_id).first();
+      if(!client)return err('Compte indisponible.',404);
+      if(client.mot_de_passe_iterations>MAX_WORKER_CYCLES)return err('Réinitialisez votre mot de passe avant de supprimer le compte.',409);
+      const computed=await passwordHash(b.password,client.mot_de_passe_sel,ctx.env.FIDELITY_PEPPER,client.mot_de_passe_iterations);
+      if(!secureCompare(computed,client.mot_de_passe_empreinte))return err('Mot de passe incorrect.',401);
+      // Effacement définitif, y compris les historiques et toutes les sessions.
+      // Les utilisations sont effacées avant leurs mouvements référencés.
+      await db.batch([
+        db.prepare('DELETE FROM utilisations_recompenses WHERE client_id=?').bind(client.id),
+        db.prepare('DELETE FROM mouvements_points WHERE client_id=?').bind(client.id),
+        db.prepare('DELETE FROM reinitialisations WHERE client_id=?').bind(client.id),
+        db.prepare('DELETE FROM sessions WHERE client_id=?').bind(client.id),
+        db.prepare('DELETE FROM clients WHERE id=?').bind(client.id)
+      ]);
+      return json({ok:true,message:'Compte et données de fidélité supprimés.'},200,{'Set-Cookie':cookie('wizer_client','',0)});
+    }
     if(method==='POST'&&path==='forgot'){
       const b=await bodyJson(req),email=(b.email||'').trim().toLowerCase(),ip=contactIP(req);
       if(!validEmail(email))return err('Adresse email invalide.',422);
@@ -176,8 +226,8 @@ export async function onRequest(ctx){
       if(!entry)return err('Ce lien a expiré ou a déjà été utilisé.',410);
       const salt=hex(bytes(16)),hash=await passwordHash(pwd,salt,ctx.env.FIDELITY_PEPPER),now=sec();
       const results=await db.batch([
-        db.prepare(`UPDATE clients SET mot_de_passe_sel=?, mot_de_passe_empreinte=? WHERE id=?
-          AND EXISTS(SELECT 1 FROM reinitialisations WHERE jeton_hash=? AND utilise_le IS NULL AND expire_le>?)`).bind(salt,hash,entry.client_id,entry.jeton_hash,now),
+        db.prepare(`UPDATE clients SET mot_de_passe_sel=?, mot_de_passe_empreinte=?, mot_de_passe_iterations=? WHERE id=?
+          AND EXISTS(SELECT 1 FROM reinitialisations WHERE jeton_hash=? AND utilise_le IS NULL AND expire_le>?)`).bind(salt,hash,CYCLES,entry.client_id,entry.jeton_hash,now),
         db.prepare(`UPDATE reinitialisations SET utilise_le=? WHERE jeton_hash=? AND utilise_le IS NULL AND expire_le>?`).bind(now,entry.jeton_hash,now),
         db.prepare('DELETE FROM sessions WHERE client_id=?').bind(entry.client_id)
       ]);
@@ -221,7 +271,19 @@ export async function onRequest(ctx){
     }
     return err('Route inconnue',404);
   }catch(e){
+    if(e instanceof RequestBodyError)return err(e.message,e.status);
     console.error('Fidelity error:',e?.name||'Error');
     return err('Une erreur serveur est survenue. Vérifiez la configuration et réessayez.',500);
   }
+}
+
+// Appelé par le déclencheur Cron du Worker ; les durées sont en secondes Unix UTC.
+export async function purgeExpiredFidelity(env,now=sec()){
+  if(!env.FIDELITY_DB)throw new Error('Liaison FIDELITY_DB manquante');
+  const db=env.FIDELITY_DB;
+  await db.batch([
+    db.prepare('DELETE FROM sessions WHERE expire_le<=?').bind(now),
+    db.prepare('DELETE FROM reinitialisations WHERE expire_le<=? OR (utilise_le IS NOT NULL AND utilise_le<=?)').bind(now,now-86400),
+    db.prepare('DELETE FROM tentatives_connexion WHERE debut_fenetre<=?').bind(now-900)
+  ]);
 }

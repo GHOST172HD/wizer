@@ -4,7 +4,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(self), microphone=(), camera=(self)
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; img-src 'self' data: https:; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; font-src 'self' data:; connect-src 'self' https:; frame-src 'self' https://www.tiktok.com https://www.instagram.com;
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: blob: https:; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; font-src 'self' data:; connect-src 'self' https:; frame-src 'self' https://www.tiktok.com https://www.instagram.com;
 
 /fidelity-files/*
   X-Robots-Tag: noindex, nofollow, noarchive

@@ -42,6 +42,13 @@
  <div id="qr" class="fid-qr" aria-label="Code QR de fidélité"></div>
  <p class="fid-help">Présentez ce QR code à l'agent après votre prestation. Votre code ne contient pas votre nom, téléphone ou email.</p>
  <button id="download" type="button" class="fid-primary">Télécharger mon QR code</button>
+ <details class="fid-delete-panel"><summary>Supprimer définitivement mon compte</summary>
+  <p>Cette action efface votre carte, vos points et votre historique fidélité. Elle est irréversible.</p>
+  <form id="delete-account-form" class="fid-form">
+    <label>Confirmez avec votre mot de passe<input name="password" type="password" autocomplete="current-password" minlength="12" required></label>
+    <button type="submit" class="fid-outline">Supprimer définitivement mon compte</button>
+  </form>
+ </details>
  <div class="fid-rewards"><h3>Récompenses à venir</h3><p id="rewards-info">Le salon fixe prochainement les seuils et les avantages. Vous cumulez déjà vos points.</p></div>
 </section>
 <p class="fid-small">Le compte est conservé sur nos serveurs sécurisés. Cet appareil mémorise votre connexion par un cookie protégé ; vous pouvez vous connecter sur un autre appareil avec votre email et votre mot de passe.</p>

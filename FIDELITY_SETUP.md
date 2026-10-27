@@ -4,7 +4,7 @@
 
 ## Avant toute mise en ligne
 
-**Les deux pages sont développées, mais le système ne fonctionnera PAS tant que la base D1, les secrets et les Pages Functions ne sont pas configurés.** En l'absence des secrets, les API renvoient `503`, sans créer ni attribuer des points. Il s'agit d'une mesure volontaire de sécurité.
+**Les deux pages sont développées, mais le système ne fonctionnera PAS tant que la base D1, les secrets et le Worker Cloudflare ne sont pas configurés.** En l'absence des secrets, les API renvoient `503`, sans créer ni attribuer des points. Il s'agit d'une mesure volontaire de sécurité.
 
 ### 1. Architecture (MERISE)
 
@@ -29,7 +29,7 @@ Dans Cloudflare, aller dans **Workers & Pages → D1 SQL Databases → Create** 
 npx wrangler d1 execute wizer-fidelity --remote --file=database/fidelity_schema.sql
 ```
 
-Puis dans **Workers & Pages → ton projet Pages → Settings → Bindings → Add → D1 database** :
+Ensuite, dans **Workers et Pages → wizer → Paramètres → Liaisons**, après déploiement du script Worker :
 
 - **Variable name : `FIDELITY_DB`** (respecte majuscules)
 - Choisir la base `wizer-fidelity`.
@@ -38,7 +38,7 @@ Redéployer ensuite. Ne publie pas le fichier SQL dans `dist`.
 
 ### 3. Définir le mot de passe agent (c'est ici)
 
-Dans **Pages → Settings → Variables and Secrets**, créer des **Secrets**, pas des variables publiques :
+Dans **Workers et Pages → wizer → Paramètres → Variables et secrets**, créer des **Secrets**, pas des variables publiques :
 
 | Nom exact | Valeur à créer |
 |---|---|
@@ -64,17 +64,20 @@ Le formulaire « mot de passe oublié » est prévu, mais il exige un service d'
 
 Les liens durent **20 minutes**, sont à usage unique et invalident les anciennes sessions après changement de mot de passe. Tant que Resend n'est pas configuré, l'API annonce que la récupération est indisponible. **Ne lance pas le programme pour de vrais clients tant que les emails de récupération n'ont pas été testés.**
 
-### 5. Construire et publier sur Cloudflare Pages
+### 5. Construire et publier sur Cloudflare Workers
 
-Avec le dépôt GitHub connecté (pas un simple glisser-déposer du ZIP) :
+Le dépôt GitHub est connecté au Worker `wizer`. Conserver les paramètres :
 
-- **Build command : `sh build-cloudflare.sh`**
-- **Build output directory : `dist`**
-- **Root directory : dossier du site** (là où se trouvent `index.html`, `build-cloudflare.sh`, `functions/`).
+- **Commande de build : `sh build-cloudflare.sh`** (produit les ressources publiques dans `dist`).
+- **Commande de déploiement : `npx wrangler deploy`**.
+- **Répertoire racine : `/`** lorsque les fichiers sont à la racine du dépôt.
+- Le Worker est déclaré dans `wrangler.jsonc` (`main: ./worker/index.js`) et le répertoire de ressources publiques est `dist` (`assets.directory`).
 
-Le code serveur `functions/api/fidelity/[[path]].js` doit rester **dans le dépôt à la racine**, en dehors du dossier public `dist`. Cloudflare Pages détecte les Functions. Le fichier `_routes.json` fait passer uniquement `/api/fidelity/*` par les Functions ; les autres pages restent statiques. Le dossier `.git`, les fichiers SQL et les secrets ne sont PAS copiés dans `dist`.
+Le script serveur `functions/api/fidelity/[[path]].js` est importé par `worker/index.js` et n'est **pas copié** dans `dist`. Ne pas confondre avec les Pages Functions : le dossier `functions/` n'est pas automatiquement exécuté par ton Worker statique.
 
-Sur le forfait gratuit, dans **Pages → Settings → Runtime → Fail open / closed**, choisir **Fail closed** pour ne pas servir des accès non protégés lorsque les limites de Functions sont dépassées.
+Pour la purge, `wrangler.jsonc` doit aussi contenir `"triggers": {"crons": ["23 3 * * *"]}`. Préserve impérativement la **vraie valeur de `database_id`** déjà renseignée dans ton dépôt.
+
+Le dossier `.git`, le SQL, les tests et les secrets ne doivent jamais être copiés dans `dist`. En cas d'échec de compilation ou de déploiement, consulter les logs : la version active peut rester la version précédente.
 
 ### 6. Fonctionnement
 
@@ -82,8 +85,8 @@ Sur le forfait gratuit, dans **Pages → Settings → Runtime → Fail open / cl
 - `fidelity-files/scan-fidelity.html` : lien discret après Confidentialité ; mot de passe **vérifié côté serveur** ; logo vibrant durant la vérification ; caméra avec permission explicite ou image de remplacement ; confirmation humaine puis `+1` point.
 - Une même carte ne peut recevoir **qu'un point toutes les 10 minutes** (évite les scans répétés accidentels). Ce délai est dans la Function (`now-600`). Le personnel ne peut pas définir arbitrairement le nombre de points via le navigateur.
 - Les codes QR contiennent un token aléatoire de 256 bits, **aucune information personnelle**. Une capture d'écran du QR reste partageable : l'agent doit vérifier la présence réelle du client.
-- Noms, téléphone et email sont chiffrés en AES-256-GCM, avec IV aléatoire unique. Index d'email = HMAC (clé privée). Les mots de passe sont **hachés**, et non chiffrés de façon réversible, avec PBKDF2-HMAC-SHA256 à 600 000 itérations, sel aléatoire et poivre serveur.
-- Comptes et récompenses sont en D1 ; sauvegarde régulière, procédure de restauration et politique de suppression à définir.
+- Noms, téléphone et email sont chiffrés en AES-256-GCM, avec IV aléatoire unique. Index d'email = HMAC (clé privée). Les mots de passe sont **hachés**, et non chiffrés de façon réversible, avec PBKDF2-HMAC-SHA256 à 100 000 itérations pour les nouveaux comptes, coût enregistré dans `clients.mot_de_passe_iterations`, sel aléatoire et poivre serveur. Ce coût constitue un compromis imposé par la limite historique de workerd, inférieur aux recommandations OWASP pour PBKDF2-SHA256.
+- Comptes et récompenses sont en D1 ; la suppression de compte est disponible sur la page Fidelity. Prévoir également les sauvegardes et la gestion de leur durée de conservation.
 
 ### 7. Limites et durcissement à prévoir avant d'ouvrir à grande échelle
 
@@ -103,3 +106,19 @@ Sur le forfait gratuit, dans **Pages → Settings → Runtime → Fail open / cl
 - 15 visites : soin découverte offert sous conditions.
 
 Aucune récompense ne peut être automatiquement utilisée dans cette version : le système ne fait pour l'instant qu'**enregistrer les points et préparer les types de récompenses**.
+
+## Mise à niveau ciblée `wizer(5)` (27 octobre 2026)
+
+**Avant de déployer le Worker :**
+
+- **Base D1 neuve, sans table `clients` :** exécuter `database/fidelity_schema.sql`.
+- **Base D1 déjà créée avec l'ancien schéma :** faire une sauvegarde, puis exécuter **une seule fois** `database/fidelity_migration_pbkdf2.sql` avant de publier l'API mise à jour. Ne pas recréer les tables et ne pas exécuter les deux scripts indistinctement.
+- Ne pas copier le `database_id` fictif `REMPLACER_PAR_ID_D1` de l'archive sur le `wrangler.jsonc` déjà correctement configuré dans GitHub. Appliquer la nouvelle propriété `triggers` à ton fichier existant.
+- Les anciens comptes dont le hachage a été calculé à **600 000** itérations ne peuvent pas être vérifiés par la limite PBKDF2 de workerd. Ils restent identifiés avec `mot_de_passe_iterations = 600000` et devront utiliser **Mot de passe oublié** (Resend doit fonctionner), ce qui créera une nouvelle empreinte à 100 000. Ne jamais simplement changer la valeur en base à 100 000 pour ces comptes.
+- Après migration, chaque nouvelle inscription ou réinitialisation sauvegarde `mot_de_passe_iterations = 100000`. Ce coût est limité côté Worker et pourra évoluer avec une future migration sécurisée.
+- Le Worker exécute la purge automatique des sessions expirées, des jetons de réinitialisation expirés ou utilisés depuis plus d'un jour et des tentatives de connexion de plus de 15 minutes grâce au Cron `23 3 * * *` (UTC). La commande de déploiement reste `npx wrangler deploy`. Vérifier les événements Cron dans Cloudflare.
+- Le client connecté peut effacer ses données avec le formulaire **Supprimer définitivement mon compte** (mot de passe requis) ; l'API `/api/fidelity/account/delete` supprime la carte, l'historique, les sessions et les jetons de réinitialisation de la base active. La restauration depuis des sauvegardes doit être encadrée séparément.
+- Les corps JSON mal formés produisent 400, ceux de plus de 8 Ko produisent 413. L'import d'image QR utilise `blob:` dans `img-src` de `_headers`.
+- L'année du pied de page est mise à jour automatiquement par `js/main.js` et des descriptions SEO ont été ajoutées aux six pages principales qui en manquaient.
+
+**Nota :** les sections historiques de ce guide consacrées à Cloudflare Pages sont conservées à titre de référence, mais c'est `WORKERS_DEPLOYMENT.md` qui fait foi pour le Worker. Le projet doit être testé sur l'environnement Cloudflare réel après déploiement.

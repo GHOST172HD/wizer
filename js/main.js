@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
   const menuToggle = document.querySelector('.menu-toggle');
   const mainMenu = document.querySelector('#main-menu');
 

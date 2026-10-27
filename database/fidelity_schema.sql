@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS clients (
   email_chiffre TEXT NOT NULL,
   mot_de_passe_sel TEXT NOT NULL,
   mot_de_passe_empreinte TEXT NOT NULL,
+  mot_de_passe_iterations INTEGER NOT NULL DEFAULT 100000 CHECK(mot_de_passe_iterations BETWEEN 1 AND 1000000),
   qr_code TEXT NOT NULL UNIQUE,
   total_points INTEGER NOT NULL DEFAULT 0 CHECK(total_points >= 0),
   cree_le INTEGER NOT NULL

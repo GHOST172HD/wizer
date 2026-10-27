@@ -39,6 +39,16 @@ byId('register-form').addEventListener('submit',e=>{e.preventDefault();sending(e
 byId('forgot-form').addEventListener('submit',e=>{e.preventDefault();sending(e.currentTarget,'forgot',f=>({email:f.get('email')}),d=>notice(d.message,true));});
 byId('reset-form').addEventListener('submit',e=>{e.preventDefault();const token=new URLSearchParams(location.search).get('reset');sending(e.currentTarget,'reset',f=>({token,password:f.get('password')}),()=>{history.replaceState(null,'',location.pathname);choose('login');notice('Mot de passe changé. Connectez-vous.',true);});});
 byId('logout').addEventListener('click',async()=>{try{await api('logout',{});choose('login');notice('Déconnexion réussie.',true);}catch(e){notice(e.message);}});
+byId('delete-account-form').addEventListener('submit',async(e)=>{
+ e.preventDefault();
+ if(!confirm('Confirmer la suppression définitive de votre compte fidélité, QR code, points et historique ?'))return;
+ const form=e.currentTarget,button=form.querySelector('[type=submit]');button.disabled=true;
+ try{
+  await api('account/delete',{password:new FormData(form).get('password')});
+  currentQR='';byId('qr').replaceChildren();form.reset();
+  choose('login');notice('Votre compte fidélité et ses données ont été supprimés.',true);
+ }catch(error){notice(error.message);}finally{button.disabled=false;}
+});
 byId('download').addEventListener('click',()=>{
  const img=byId('qr').querySelector('img'),canvas=byId('qr').querySelector('canvas');
  const url=(img&&img.src.startsWith('data:')?img.src:null)||(canvas?canvas.toDataURL('image/png'):null);

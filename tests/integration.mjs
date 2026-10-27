@@ -3,9 +3,18 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
-import {onRequest} from '../functions/api/fidelity/[[path]].js';
+import {onRequest, purgeExpiredFidelity} from '../functions/api/fidelity/[[path]].js';
+import worker from '../worker/index.js';
+const schema=readFileSync(new URL('../database/fidelity_schema.sql',import.meta.url),'utf8');
 const sqlite=new DatabaseSync(':memory:');
-sqlite.exec(readFileSync(new URL('../database/fidelity_schema.sql',import.meta.url),'utf8'));
+sqlite.exec(schema);
+// Une base existante avant la mise à jour peut recevoir la colonne sans
+// modifier artificiellement les coûts PBKDF2 d'anciens comptes.
+const previousSchema=schema.replace('  mot_de_passe_iterations INTEGER NOT NULL DEFAULT 100000 CHECK(mot_de_passe_iterations BETWEEN 1 AND 1000000),\n','');
+const legacy=new DatabaseSync(':memory:');legacy.exec(previousSchema);
+legacy.exec(readFileSync(new URL('../database/fidelity_migration_pbkdf2.sql',import.meta.url),'utf8'));
+assert(legacy.prepare('PRAGMA table_info(clients)').all().some(c=>c.name==='mot_de_passe_iterations'&&String(c.dflt_value)==='600000'));
+legacy.close();
 const db={
  prepare(sql){return {
    bind(...args){const st=sqlite.prepare(sql);return {first:async()=>st.get(...args)||null,run:async()=>{const r=st.run(...args);return {meta:{changes:Number(r.changes)}};}};}
@@ -33,6 +42,7 @@ async function main(){
  assert.equal(reg.status,201,JSON.stringify(reg.body));assert.equal(reg.body.account.points,0);
  assert.match(reg.body.account.qr,/^WIZER-FIDELITY:V1:[a-f0-9]{64}$/);
  const row=sqlite.prepare('SELECT * FROM clients').get();
+ assert.equal(row.mot_de_passe_iterations,100000);
  assert(!JSON.stringify(row).includes('Marie'));assert(!JSON.stringify(row).includes('example.net'));
  assert(!JSON.stringify(row).includes('S0lid-Password-2030'));
  const me=await request('me',undefined,reg.cookie);assert.equal(me.status,200);assert.equal(me.body.account.nom,'Test');
@@ -54,9 +64,42 @@ async function main(){
  const used=await request('reset',{token:resetToken,password:'New-S0lid-Password-2030'});assert.equal(used.status,410);
  const oldLogin=await request('login',{email:'marie@example.net',password:'S0lid-Password-2030'});assert.equal(oldLogin.status,401);
  const newLogin=await request('login',{email:'marie@example.net',password:'New-S0lid-Password-2030'});assert.equal(newLogin.status,200);
+ assert.equal(sqlite.prepare('SELECT mot_de_passe_iterations FROM clients').get().mot_de_passe_iterations,100000);
  const oldCookie=await request('me',undefined,reg.cookie);assert.equal(oldCookie.status,401);
  const rewards=sqlite.prepare('SELECT COUNT(*) AS count FROM recompenses WHERE active=1').get();assert.equal(rewards.count,0);
  const unauthorized=await request('admin/award',{reference:ref,operation_id:op},'',{Origin:'https://attacker.example'});assert.equal(unauthorized.status,403);
- console.log('PASS: registration, AES encrypted data, password hash, login, sessions, staff auth, scan, atomic +1, cooldown, email reset, replay, CSRF, offline mode, rewards.');
+ // Les corps HTTP malformés ou trop gros ne doivent pas produire 500.
+ async function rawPost(path,body){
+  const res=await onRequest({env,request:new Request(domain+'/api/fidelity/'+path,{method:'POST',body,headers:{Origin:domain,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.6'}})});
+  return {status:res.status,body:await res.json()};
+ }
+ assert.equal((await rawPost('login','{')).status,400);
+ assert.equal((await rawPost('login','null')).status,400);
+ assert.equal((await rawPost('login','[]')).status,400);
+ assert.equal((await rawPost('login','"hello"')).status,400);
+ assert.equal((await rawPost('login',JSON.stringify({email:'a'.repeat(10000)}))).status,413);
+ // Vérifier la purge, y compris via le gestionnaire scheduled du Worker.
+ const now=Math.floor(Date.now()/1000);
+ sqlite.prepare("INSERT INTO sessions(identifiant_hash,type_session,expire_le) VALUES('expired-test','agent',?)").run(now-10);
+ sqlite.prepare("INSERT INTO tentatives_connexion(cle_hash,nombre,debut_fenetre) VALUES('old-test',1,?)").run(now-1000);
+ sqlite.prepare("INSERT INTO reinitialisations(jeton_hash,client_id,expire_le) VALUES('old-reset',?,?)").run(ref,now-1);
+ await worker.scheduled({cron:'23 3 * * *'},env,{});
+ assert.equal(sqlite.prepare("SELECT 1 FROM sessions WHERE identifiant_hash='expired-test'").get(),undefined);
+ assert.equal(sqlite.prepare("SELECT 1 FROM tentatives_connexion WHERE cle_hash='old-test'").get(),undefined);
+ assert.equal(sqlite.prepare("SELECT 1 FROM reinitialisations WHERE jeton_hash='old-reset'").get(),undefined);
+ assert.equal((await request('me',undefined,newLogin.cookie)).status,200);
+ // Suppression authentifiée : ne supprime pas les autres sessions agents.
+ assert.equal((await request('account/delete',{password:'wrong'},newLogin.cookie)).status,401);
+ assert.equal((await request('account/delete',{password:'New-S0lid-Password-2030'},'',{Origin:'https://attacker.example'})).status,403);
+ const del=await request('account/delete',{password:'New-S0lid-Password-2030'},newLogin.cookie);
+ assert.equal(del.status,200,JSON.stringify(del.body));
+ assert.match(del.cookie,/wizer_client=/);
+ for(const table of ['clients','mouvements_points','sessions','reinitialisations','utilisations_recompenses']){
+   const sql='SELECT COUNT(*) AS n FROM '+table+(table==='sessions'?" WHERE type_session='client'":'');
+   assert.equal(sqlite.prepare(sql).get().n,0,table);
+ }
+ assert.equal((await request('me',undefined,newLogin.cookie)).status,401);
+ assert.equal((await request('admin/me',undefined,staff.cookie)).status,200);
+ console.log('PASS: auth, hash cost, schema migration, AES, sessions, agent, points, replay, email reset, invalid JSON 400, oversize 413, scheduled purge, secure account delete, CSRF.');
 }
 main().catch(e=>{console.error('FAILED',e);process.exitCode=1;});

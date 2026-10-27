@@ -52,9 +52,9 @@
       <section class="legal-card">
         <h2>3. Compte fidélité Wizer (nouveau)</h2>
         <p>Si vous créez une carte fidélité, Wizer traite vos nom, prénom, téléphone, email, empreinte de mot de passe, identifiant de carte, date de création et historique des points pour gérer votre compte et ses avantages.</p>
-        <p>Les coordonnées sont chiffrées côté serveur avant d'être enregistrées dans Cloudflare D1. Le mot de passe n'est pas conservé en clair : une empreinte cryptographique lente et salée est enregistrée. Le QR code ne comporte que l'identifiant aléatoire de carte, sans coordonnées personnelles.</p>
+        <p>Les coordonnées sont chiffrées côté serveur avant d'être enregistrées dans Cloudflare D1. Le mot de passe n'est pas conservé en clair : une empreinte PBKDF2-HMAC-SHA256 (100 000 itérations par défaut, nombre enregistré par compte), salée et renforcée par un secret serveur, est enregistrée. Le QR code ne comporte que l'identifiant aléatoire de carte, sans coordonnées personnelles.</p>
         <p>Une connexion est maintenue au moyen d'un cookie sécurisé de session, strictement nécessaire à la carte. Le compte reste accessible depuis un autre navigateur avec vos identifiants. Les agents authentifiés voient uniquement le nom du client et son total de points pour valider sa prestation.</p>
-        <p>La récupération du mot de passe nécessite un prestataire d'envoi d'emails, utilisé uniquement si ce service a été configuré. Les données sont conservées tant que le compte est actif, sous réserve des obligations légales applicables. Pour accéder, rectifier ou demander la suppression de vos informations, contactez <a href="mailto:Wizer.institut@gmail.com">Wizer.institut@gmail.com</a>. La suppression d'un compte et l'organisation des durées de conservation doivent être prises en charge par le salon.</p>
+        <p>La récupération du mot de passe nécessite un prestataire d'envoi d'emails, utilisé uniquement si ce service a été configuré. Les données sont conservées tant que le compte est actif, sous réserve des obligations légales applicables. Vous pouvez supprimer votre compte depuis la page Fidélité, après confirmation de votre mot de passe ; les données de la carte, les sessions et l’historique des points sont alors supprimés de la base active. Les sauvegardes éventuelles suivent leur propre durée de rétention. Pour accéder, rectifier ou demander la suppression de vos autres informations, contactez <a href="mailto:Wizer.institut@gmail.com">Wizer.institut@gmail.com</a>. Le salon traite les demandes concernant les autres informations qu’il détient.</p>
       </section>
       <section class="legal-card">
         <h2>3. Localisation et carte</h2>
@@ -68,7 +68,7 @@
       </section>
       <section class="legal-card">
         <h2>5. Hébergement et données techniques</h2>
-        <p>Le site est hébergé sur <strong>Cloudflare Pages</strong>. Le fournisseur d'hébergement et les autres prestataires sollicités par le navigateur peuvent traiter des données techniques nécessaires au fonctionnement, à la sécurité ou à la diffusion de leurs services, notamment l'adresse IP et des informations de connexion.</p>
+        <p>Le site est hébergé sur <strong>Cloudflare Workers</strong>, avec des ressources statiques et une API fidélité. Le fournisseur d'hébergement et les autres prestataires sollicités par le navigateur peuvent traiter des données techniques nécessaires au fonctionnement, à la sécurité ou à la diffusion de leurs services, notamment l'adresse IP et des informations de connexion.</p>
         <p>Certains prestataires, notamment Cloudflare et les plateformes sociales, peuvent traiter des informations hors de la République démocratique du Congo, selon leurs infrastructures et leurs conditions contractuelles.</p>
       </section>
       <section class="legal-card">
@@ -84,7 +84,7 @@
         <h2>8. Modifications</h2>
         <p>Cette politique peut évoluer avec les fonctionnalités du site et les prestataires utilisés. La date de mise à jour figure en bas de page.</p>
       </section>
-      <p class="legal-updated">Dernière mise à jour : 15 octobre 2026.</p>
+      <p class="legal-updated">Dernière mise à jour : 27 octobre 2026.</p>
     </div>
   </section>
 </main>
