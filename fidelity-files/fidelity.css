@@ -2,7 +2,13 @@
 [hidden]{display:none!important}
 .fid-body{min-height:100vh;display:flex;flex-direction:column}
 .fid-header{width:min(1180px,calc(100% - 32px));margin:16px auto 0;display:flex;align-items:center;justify-content:space-between;gap:15px}
-.fid-logo{width:135px;height:auto;filter:drop-shadow(0 0 14px rgba(209,17,22,.55))}
+
+.fid-logo{
+    width:20%;
+    height:auto;
+    filter:drop-shadow(0 0 14px rgba(209,17,22,.55))
+}
+
 .fid-back,.fid-outline,.fid-file{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line-strong);padding:12px 17px;border-radius:14px;color:#f7d7d7;background:rgba(255,255,255,.035);cursor:pointer}
 .fid-back:hover,.fid-outline:hover{border-color:var(--accent)}
 .fid-wrap{width:min(960px,calc(100% - 32px));margin:26px auto 50px;flex:1}

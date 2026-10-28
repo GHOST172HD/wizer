@@ -1,57 +1,149 @@
-<!doctype html>
-<html lang="fr"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Fidelity | Wizer Institut</title>
-<link rel="icon" href="../assets/icons/logo-wizer-neon-icon-w.webp" type="image/webp">
-<link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="fidelity.css">
-<script src="fidelity.js" defer></script>
-</head><body class="fid-body">
-<header class="fid-header"><a href="../index.html" aria-label="Wizer — accueil"><img src="../assets/logo/wizer.webp" alt="Wizer" class="fid-logo"></a><a href="../index.html" class="fid-back">← Retour au site</a></header>
-<main class="fid-wrap">
-<div class="fid-intro"><p class="eyebrow">WIZER INSTITUT</p><h1>FIDELITY<span>.</span></h1><p>Votre fidélité mérite sa place. Une prestation au salon, un point sur votre carte.</p></div>
-<div id="message" class="fid-msg" role="status" aria-live="polite" hidden></div>
-<section class="fid-card" id="auth">
- <div class="fid-tabs"><button type="button" id="tab-login" class="current">Se connecter</button><button type="button" id="tab-register">Créer un compte</button></div>
- <form id="login-form" class="fid-form">
-  <label>Adresse email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
-  <label>Mot de passe<input name="password" type="password" autocomplete="current-password" required></label>
-  <button class="fid-primary" type="submit">Ouvrir ma carte</button>
-  <button type="button" id="show-forgot" class="fid-link">Mot de passe oublié ?</button>
- </form>
- <form id="register-form" class="fid-form" hidden>
-  <div class="fid-fields"><label>Prénom<input name="prenom" autocomplete="given-name" minlength="2" maxlength="80" required></label><label>Nom<input name="nom" autocomplete="family-name" minlength="2" maxlength="80" required></label></div>
-  <label>Numéro de téléphone<input name="telephone" type="tel" autocomplete="tel" required placeholder="+243 8XX XXX XXX" maxlength="22"></label>
-  <label>Adresse email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
-  <label>Créer un mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required><small>Au moins 12 caractères. Ne réutilisez pas votre mot de passe d'un autre service.</small></label>
-  <label class="fid-check"><input type="checkbox" name="accept" required> J'ai lu la <a href="../confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a> concernant mon compte fidélité.</label>
-  <button class="fid-primary" type="submit">Créer ma carte fidélité</button>
- </form>
- <form id="forgot-form" class="fid-form" hidden>
-  <h2>Réinitialiser le mot de passe</h2><p>Un lien valable 20 minutes sera envoyé à l'adresse enregistrée.</p>
-  <label>Votre adresse email<input name="email" type="email" required maxlength="200"></label>
-  <button class="fid-primary" type="submit">Envoyer le lien</button><button class="fid-link" type="button" id="forgot-back">← Se connecter</button>
- </form>
- <form id="reset-form" class="fid-form" hidden>
-  <h2>Nouveau mot de passe</h2><label>Mot de passe (12 caractères minimum)<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
-  <button class="fid-primary" type="submit">Enregistrer le nouveau mot de passe</button>
- </form>
-</section>
-<section id="account" class="fid-card fid-dashboard" hidden>
- <div class="fid-dashboard-head"><div><p class="eyebrow">MA CARTE WIZER</p><h2 id="welcome"></h2></div><button type="button" id="logout" class="fid-outline">Déconnexion</button></div>
- <div class="fid-points"><strong id="points">0</strong><span>point(s) fidélité</span></div>
- <div id="qr" class="fid-qr" aria-label="Code QR de fidélité"></div>
- <p class="fid-help">Présentez ce QR code à l'agent après votre prestation. Votre code ne contient pas votre nom, téléphone ou email.</p>
- <button id="download" type="button" class="fid-primary">Télécharger mon QR code</button>
- <details class="fid-delete-panel"><summary>Supprimer définitivement mon compte</summary>
-  <p>Cette action efface votre carte, vos points et votre historique fidélité. Elle est irréversible.</p>
-  <form id="delete-account-form" class="fid-form">
-    <label>Confirmez avec votre mot de passe<input name="password" type="password" autocomplete="current-password" minlength="12" required></label>
-    <button type="submit" class="fid-outline">Supprimer définitivement mon compte</button>
-  </form>
- </details>
- <div class="fid-rewards"><h3>Récompenses à venir</h3><p id="rewards-info">Le salon fixe prochainement les seuils et les avantages. Vous cumulez déjà vos points.</p></div>
-</section>
-<p class="fid-small">Le compte est conservé sur nos serveurs sécurisés. Cet appareil mémorise votre connexion par un cookie protégé ; vous pouvez vous connecter sur un autre appareil avec votre email et votre mot de passe.</p>
-</main>
-<footer class="fid-footer"><a href="../confidentialite.html">Confidentialité</a><span>© Wizer Institut</span></footer>
-</body></html>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+
+    <title>WIZER | FIDELITY</title>
+
+    <link rel="icon" href="../assets/icons/logo-wizer-neon-icon-w.webp" type="image/webp">
+
+    <!-- Styles du site principal -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/animations.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Style spécifique à Fidelity -->
+    <link rel="stylesheet" href="./fidelity.css">
+
+    <!-- Menu du site principal -->
+    <script src="../js/main.js" defer></script>
+
+    <!-- Fonctionnement du compte Fidelity -->
+    <script src="./fidelity.js" defer></script>
+  </head>
+
+  
+  <body class="fid-body">
+    
+    <header class="site-header">
+      <div class="container nav-wrap">
+          
+          <a class="brand" href="../index.html">
+            <img src="../assets/logo/wizer.webp" class="w-60" alt="Logo Wizer">
+          </a>
+          
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+              <span class="bar" aria-hidden="true"></span>
+              <span class="bar" aria-hidden="true"></span>
+              <span class="bar" aria-hidden="true"></span>
+          </button>
+          <nav id="main-menu" class="main-menu">
+              <a href="../index.html">Accueil</a>
+              <a href="../services.html">Services & tarifs</a>
+              <a href="../galerie.html">Galerie</a><a href="../about.html">À propos</a>
+              <a href="../localisation.html">Localisation</a>
+              <a href="../contact.html">Contact</a>
+              
+              <a class="active" href="fidelity-files/fidelity.html">FIDELITY</a>
+
+              <a class="button button-bounce button-small" href="reservation.html">Réserver</a>
+          </nav>
+      </div>
+    </header>
+    <main class="fid-wrap">
+      <div class="fid-intro">
+        <p class="eyebrow">WIZER INSTITUT</p><h1>FIDELITY<span>.</span></h1><p>Votre fidélité mérite sa place. Une prestation au salon, un point sur votre carte.</p></div>
+      <div id="message" class="fid-msg" role="status" aria-live="polite" hidden></div>
+      <section class="fid-card" id="auth">
+        <div class="fid-tabs">
+          <button type="button" id="tab-login" class="current">Se connecter</button>
+          <button type="button" id="tab-register">Créer un compte</button>
+        </div>
+
+        <form id="login-form" class="fid-form">
+          <label>Adresse email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+
+          <label>Mot de passe<input name="password" type="password" autocomplete="current-password" required></label>
+          <button class="fid-primary" type="submit">Ouvrir ma carte</button>
+          <button type="button" id="show-forgot" class="fid-link">Mot de passe oublié ?</button>
+        </form>
+        <form id="register-form" class="fid-form" hidden>
+          <div class="fid-fields">
+            <label>Prénom<input name="prenom" autocomplete="given-name" minlength="2" maxlength="80" required></label>
+            <label>Nom<input name="nom" autocomplete="family-name" minlength="2" maxlength="80" required></label>
+          </div>
+
+          <label>Numéro de téléphone<input name="telephone" type="tel" autocomplete="tel" required placeholder="+243 8XX XXX XXX" maxlength="22"></label>
+          <label>Adresse email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+
+          <label>Créer un mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+            
+            <small>Minimum 12 caractères.</small>
+          </label>
+          
+
+          <label class="fid-check">
+            <input type="checkbox" name="accept" required>
+
+            <span class="fid-check__text">
+              <span>
+                J'ai lu la
+                <a href="../confidentialite.html" target="_blank" rel="noopener"> politique de confidentialité</a>
+              </span>
+              <span>concernant mon compte FIDELITY.</span>
+            </span>
+          </label>
+          <button class="fid-primary" type="submit">Créer ma carte fidélité</button>
+        </form>
+        <form id="forgot-form" class="fid-form" hidden>
+          <h2>Réinitialiser le mot de passe</h2><p>Un lien valable 20 minutes sera envoyé à l'adresse enregistrée.</p>
+          <label>Votre adresse email<input name="email" type="email" required maxlength="200"></label>
+          <button class="fid-primary" type="submit">Envoyer le lien</button>
+          <button class="fid-link" type="button" id="forgot-back">← Se connecter</button>
+        </form>
+        <form id="reset-form" class="fid-form" hidden>
+          <h2>Nouveau mot de passe</h2>
+          <label>Mot de passe (12 caractères minimum)<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+          <button class="fid-primary" type="submit">Enregistrer le nouveau mot de passe</button>
+        </form>
+      </section>
+      <section id="account" class="fid-card fid-dashboard" hidden>
+        <div class="fid-dashboard-head">
+          <div>
+            <p class="eyebrow">MA CARTE WIZER</p>
+            <h2 id="welcome"></h2>
+          </div>
+          <button type="button" id="logout" class="fid-outline">Déconnexion</button>
+        </div>
+
+        <div class="fid-points">
+          <strong id="points">0</strong>
+          <span>point(s) fidélité</span>
+        </div>
+
+        <div id="qr" class="fid-qr" aria-label="Code QR de fidélité"></div>
+        <p class="fid-help">Présentez ce QR code à l'agent après votre prestation. Votre code ne contient pas votre nom, téléphone ou email.</p>
+        <button id="download" type="button" class="fid-primary">Télécharger mon QR code</button>
+        <details class="fid-delete-panel">
+          <summary>Supprimer définitivement mon compte</summary>
+          <p>Cette action efface votre carte, vos points et votre historique FIDELITY. Elle est irréversible.</p>
+          <form id="delete-account-form" class="fid-form">
+            <label>Confirmez avec votre mot de passe<input name="password" type="password" autocomplete="current-password" minlength="12" required></label>
+            <button type="submit" class="fid-outline">Supprimer définitivement mon compte</button>
+          </form>
+        </details>
+        <div class="fid-rewards"><h3>Récompenses à venir</h3><p id="rewards-info">Le salon fixe prochainement les seuils et les avantages. Vous cumulez déjà vos points.</p></div>
+      </section>
+
+
+    </main>
+
+    <footer class="fid-footer">
+      <a href="../confidentialite.html">Confidentialité</a>
+      <span>© Wizer Institut</span>
+    </footer>
+  </body>
+</html>
