@@ -49,7 +49,7 @@ el('scan-file').addEventListener('change',async e=>{
  const file=e.target.files?.[0];if(!file)return;
  try{await loadScanner();await endCamera();scanner=new Html5Qrcode('reader');const code=await scanner.scanFile(file,true);await inspect(code);}catch(_){msg('QR code non détecté dans cette image.');}finally{e.target.value='';}
 });
-el('manual-form').addEventListener('submit',e=>{e.preventDefault();inspect(new FormData(e.currentTarget).get('code'));});
+el('manual-form')?.addEventListener('submit',e=>{e.preventDefault();inspect(new FormData(e.currentTarget).get('code'));});
 el('cancel').addEventListener('click',()=>{selected=null;el('customer').hidden=true;});
 el('award').addEventListener('click',async()=>{
  if(!selected||lock)return;lock=true;const button=el('award');button.disabled=true;
