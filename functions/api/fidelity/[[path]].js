@@ -131,6 +131,7 @@ async function sendEmail(ctx,email,subject,plain){
     body:JSON.stringify({from:ctx.env.FIDELITY_EMAIL_FROM,to:[email],subject,text:plain})
   });return r.ok;
 }
+import { marketingRequest, processMarketingQueue } from './marketing.js';
 const noStore='no-store';
 export async function onRequest(ctx){
   const req=ctx.request,path=new URL(req.url).pathname.replace(/^\/api\/fidelity\/?/,'').replace(/\/$/,'');
@@ -141,6 +142,11 @@ export async function onRequest(ctx){
   if(method==='POST'&&!sameOrigin(req))return err('Origine ou type de requête refusé',403);
   try{
     if(method==='GET'&&path==='config')return json({ok:true,reinitialisation_disponible:!!(ctx.env.RESEND_API_KEY&&ctx.env.FIDELITY_EMAIL_FROM)});
+    if(path==='marketing/preferences'||path==='marketing/unsubscribe'||path.startsWith('admin/marketing/')){
+      return await marketingRequest(ctx,path,{
+        json,err,bodyJson,session,decipher,keyedIndex,secureCompare,sec,id,validEmail,
+      });
+    }
     if(method==='POST'&&path==='register'){
       const b=await bodyJson(req),ip=contactIP(req);
       if(await throttle(ctx,'registration',ip))return err('Trop de demandes. Réessayez plus tard.',429);
@@ -152,8 +158,12 @@ export async function onRequest(ctx){
       const salt=hex(bytes(16)),hash=await passwordHash(pwd,salt,ctx.env.FIDELITY_PEPPER,CYCLES);
       const [f,n,t,e]=await Promise.all([first,name,tel,email].map(x=>cipher(x,ctx.env.FIDELITY_ENC_KEY)));
       const customerId=id(), qr=hex(bytes(32));
-      await db.prepare(`INSERT INTO clients(id,email_index,prenom_chiffre,nom_chiffre,telephone_chiffre,email_chiffre,mot_de_passe_sel,mot_de_passe_empreinte,mot_de_passe_iterations,qr_code,cree_le) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
-        .bind(customerId,eidx,f,n,t,e,salt,hash,CYCLES,qr,sec()).run();
+      const registration = db.prepare(`INSERT INTO clients(id,email_index,prenom_chiffre,nom_chiffre,telephone_chiffre,email_chiffre,mot_de_passe_sel,mot_de_passe_empreinte,mot_de_passe_iterations,qr_code,cree_le) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
+        .bind(customerId,eidx,f,n,t,e,salt,hash,CYCLES,qr,sec());
+      // Seule une sélection explicite enregistre le consentement marketing.
+      const preferences = db.prepare(`INSERT INTO marketing_preferences(client_id,subscribed,subscribed_at,source)
+        VALUES(?,?,?,?)`).bind(customerId,b.marketing===true?1:0,b.marketing===true?sec():null,'inscription');
+      await db.batch([registration,preferences]);
       const set=await newSession(ctx,'client',customerId);
       return json({ok:true,account:{prenom:first,nom:name,telephone:tel,email,points:0,qr:'WIZER-FIDELITY:V1:'+qr}},201,{'Set-Cookie':set});
     }

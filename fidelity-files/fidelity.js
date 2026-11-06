@@ -20,6 +20,7 @@ let currentQR='';
 async function account(data){
  byId('auth').hidden=true;byId('account').hidden=false;quiet();
  byId('welcome').textContent=`${data.prenom} ${data.nom}`;byId('points').textContent=String(data.points);currentQR=data.qr;
+ await refreshMarketingPreference();
  const holder=byId('qr');holder.replaceChildren();
  try{
   if(!window.QRCode)await script('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js');
@@ -35,7 +36,7 @@ byId('tab-register').addEventListener('click',()=>choose('register'));
 byId('show-forgot').addEventListener('click',()=>choose('forgot'));
 byId('forgot-back').addEventListener('click',()=>choose('login'));
 byId('login-form').addEventListener('submit',e=>{e.preventDefault();sending(e.currentTarget,'login',f=>({email:f.get('email'),password:f.get('password')}),d=>account(d.account));});
-byId('register-form').addEventListener('submit',e=>{e.preventDefault();sending(e.currentTarget,'register',f=>({prenom:f.get('prenom'),nom:f.get('nom'),telephone:f.get('telephone'),email:f.get('email'),password:f.get('password'),accept:f.get('accept')!==null}),d=>account(d.account));});
+byId('register-form').addEventListener('submit',e=>{e.preventDefault();sending(e.currentTarget,'register',f=>({prenom:f.get('prenom'),nom:f.get('nom'),telephone:f.get('telephone'),email:f.get('email'),password:f.get('password'),accept:f.get('accept')!==null,marketing:f.get('marketing')!==null}),d=>account(d.account));});
 byId('forgot-form').addEventListener('submit',e=>{e.preventDefault();sending(e.currentTarget,'forgot',f=>({email:f.get('email')}),d=>notice(d.message,true));});
 byId('reset-form').addEventListener('submit',e=>{e.preventDefault();const token=new URLSearchParams(location.search).get('reset');sending(e.currentTarget,'reset',f=>({token,password:f.get('password')}),()=>{history.replaceState(null,'',location.pathname);choose('login');notice('Mot de passe changé. Connectez-vous.',true);});});
 byId('logout').addEventListener('click',async()=>{try{await api('logout',{});choose('login');notice('Déconnexion réussie.',true);}catch(e){notice(e.message);}});
@@ -59,3 +60,20 @@ byId('download').addEventListener('click',()=>{
  const reset=new URLSearchParams(location.search).get('reset');if(reset){choose('reset');return;}
  try{const d=await api('me');await account(d.account);}catch(_){choose('login');}
 })();
+
+// Un choix explicite, modifiable pour les comptes déjà créés.
+async function refreshMarketingPreference(){
+ const control=byId('marketing-choice'),status=byId('marketing-status');
+ control.disabled=true;status.textContent='Chargement de vos préférences…';
+ try{
+  const data=await api('marketing/preferences');
+  control.checked=data.subscribed;status.textContent=data.subscribed?'Vous recevez les offres Wizer.':'Vous ne recevez pas de promotions.';
+ }catch(e){status.textContent=e.message;}finally{control.disabled=false;}
+}
+byId('marketing-choice').addEventListener('change',async e=>{
+ const control=e.currentTarget,next=control.checked,status=byId('marketing-status');control.disabled=true;
+ try{
+  const data=await api('marketing/preferences',{subscribed:next});
+  control.checked=data.subscribed;status.textContent=data.subscribed?'Votre abonnement aux offres est enregistré.':'Vous êtes désabonné(e) des promotions.';
+ }catch(error){control.checked=!next;status.textContent=error.message;}finally{control.disabled=false;}
+});

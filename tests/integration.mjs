@@ -16,9 +16,7 @@ legacy.exec(readFileSync(new URL('../database/fidelity_migration_pbkdf2.sql',imp
 assert(legacy.prepare('PRAGMA table_info(clients)').all().some(c=>c.name==='mot_de_passe_iterations'&&String(c.dflt_value)==='600000'));
 legacy.close();
 const db={
- prepare(sql){return {
-   bind(...args){const st=sqlite.prepare(sql);return {first:async()=>st.get(...args)||null,run:async()=>{const r=st.run(...args);return {meta:{changes:Number(r.changes)}};}};}
- };},
+ prepare(sql){const st=sqlite.prepare(sql); const bound=(args)=>({first:async()=>st.get(...args)||null,all:async()=>({results:st.all(...args)}),run:async()=>{const r=st.run(...args);return {meta:{changes:Number(r.changes)}};}});return {...bound([]),bind(...args){return bound(args)}};},
  batch:async(sts)=>{
   sqlite.exec('BEGIN');try{const r=[];for(const st of sts)r.push(await st.run());sqlite.exec('COMMIT');return r;}catch(e){sqlite.exec('ROLLBACK');throw e;}
  }

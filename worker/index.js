@@ -4,6 +4,7 @@
  * Toutes les autres pages restent servies depuis dist.
  */
 import { onRequest as fidelityAPI, purgeExpiredFidelity } from '../functions/api/fidelity/[[path]].js';
+import { processMarketingQueue } from '../functions/api/fidelity/marketing.js';
 
 export default {
   async fetch(request, env, context) {
@@ -15,5 +16,6 @@ export default {
   },
   async scheduled(controller, env, ctx) {
     await purgeExpiredFidelity(env);
+    await processMarketingQueue(env);
   }
 };

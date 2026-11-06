@@ -52,3 +52,11 @@
 .fid-customer{text-align:center;border:1px solid rgba(220,69,69,.5);border-radius:17px;padding:20px;margin:20px 0;background:#180d0d}
 .fid-customer h3{color:#fff;font-size:1.45rem;margin:.2rem}.fid-customer button{margin:5px}
 @media(max-width:460px){.fid-fields{grid-template-columns:1fr}.fid-dashboard-head{flex-wrap:wrap}}
+
+/* Préférences marketing + lien agent, local aux pages fidélité */
+.fid-marketing-optin {margin-top:1px; padding:12px; border-radius:12px; background:rgba(255,255,255,.035);}
+.fid-marketing-settings {margin:24px 0 4px; text-align:left; padding:18px; border:1px solid rgba(255,255,255,.17); border-radius:16px;}
+.fid-marketing-settings h3{color:#fff;margin:0 0 15px;}
+.fid-marketing-settings .fid-check{display:flex;align-items:flex-start;gap:12px;font-size:.9rem;line-height:1.5;}
+.fid-marketing-settings .fid-check input{margin-top:3px;}
+.fid-marketing-link{margin-bottom:14px;text-decoration:none;max-width:100%;}

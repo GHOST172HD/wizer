@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="../css/animations.css">
 
-    <link rel="stylesheet" href="css/style.css">
     <!-- Style spécifique à Fidelity -->
     <link rel="stylesheet" href="./fidelity.css">
 
@@ -47,9 +46,9 @@
               <a href="../localisation.html">Localisation</a>
               <a href="../contact.html">Contact</a>
               
-              <a class="active" href="fidelity-files/fidelity.html">FIDELITY</a>
+              <a class="active" href="fidelity.html">FIDELITY</a>
 
-              <a class="button button-bounce button-small" href="reservation.html">Réserver</a>
+              <a class="button button-bounce button-small" href="../reservation.html">Réserver</a>
           </nav>
       </div>
     </header>
@@ -96,6 +95,10 @@
               <span>concernant mon compte FIDELITY.</span>
             </span>
           </label>
+          <label class="fid-check fid-marketing-optin">
+            <input type="checkbox" name="marketing">
+            <span class="fid-check__text">J'accepte de recevoir par email les promotions, nouveautés et offres personnalisées de Wizer Institut. Je peux me désabonner à tout moment. <small>(Facultatif)</small></span>
+          </label>
           <button class="fid-primary" type="submit">Créer ma carte fidélité</button>
         </form>
         <form id="forgot-form" class="fid-form" hidden>
@@ -135,6 +138,14 @@
             <button type="submit" class="fid-outline">Supprimer définitivement mon compte</button>
           </form>
         </details>
+        <div class="fid-marketing-settings">
+          <h3>Mes préférences email</h3>
+          <label class="fid-check">
+            <input type="checkbox" id="marketing-choice">
+            <span class="fid-check__text">Je souhaite recevoir les offres et les nouveautés Wizer par email. Je peux retirer mon accord à tout moment.</span>
+          </label>
+          <p id="marketing-status" class="fid-help" role="status" aria-live="polite"></p>
+        </div>
         <div class="fid-rewards"><h3>Récompenses à venir</h3><p id="rewards-info">Le salon fixe prochainement les seuils et les avantages. Vous cumulez déjà vos points.</p></div>
       </section>
 
