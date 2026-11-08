@@ -1,0 +1,21 @@
+/* Espace d'accueil agent : styles isolés, sans modifier Fidelity ou Marketing. */
+.agent-body { background: radial-gradient(ellipse 90% 540px at 50% 0%,rgba(157,14,27,.18),transparent 75%),#080607; }
+.agent-header .fid-logo { width:clamp(115px,18vw,195px); max-width:100%; }
+.agent-header .fid-outline { text-decoration:none; }
+.agent-wrap { width:min(900px,calc(100% - 32px)); }
+.agent-auth { max-width:500px; }
+.agent-auth .fid-help { margin:0 0 21px; }
+.agent-dashboard { width:100%; }
+.agent-dashboard-top { display:flex;justify-content:space-between;align-items:center;gap:16px;margin:4px 0 23px; }
+.agent-dashboard-top h2 { color:#fff;font-size:clamp(1.4rem,4vw,2rem);margin:5px 0 0;line-height:1.25; }
+.agent-choices { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px; }
+.agent-choice { display:flex;flex-direction:column;align-items:flex-start;min-height:312px;gap:10px;background:linear-gradient(150deg,#2a1319,#0e090b);border:1px solid rgba(216,79,93,.33);border-radius:22px;padding:clamp(21px,3vw,30px);text-decoration:none;color:#fff;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
+.agent-choice:hover,.agent-choice:focus-visible { transform:translateY(-3px);border-color:#e84752;box-shadow:0 20px 45px rgba(0,0,0,.28);outline-offset:4px; }
+.agent-choice-icon { display:grid;place-items:center;width:57px;height:57px;font-size:1.65rem;border:1px solid rgba(245,106,115,.4);border-radius:16px;background:#411820;color:#ffbfc4; }
+.agent-choice-caption { margin-top:6px;font-size:.7rem;letter-spacing:.12em;color:#ffb8bf;font-weight:800; }
+.agent-choice strong { font-size:clamp(1.65rem,3vw,2.15rem);line-height:1.1; }
+.agent-choice-detail { color:#e4c8cc;line-height:1.55;font-size:.91rem; }
+.agent-choice-link { display:flex;align-items:center;gap:7px;color:#ff8b92;font-weight:800;font-size:.9rem;margin-top:auto;padding-top:12px; }
+.agent-session-help { color:#cbb6b9;font-size:.82rem;line-height:1.6;text-align:center;max-width:570px;margin:25px auto 0; }
+@media(max-width:630px){.agent-choices{grid-template-columns:1fr}.agent-choice{min-height:260px}.agent-dashboard-top{align-items:flex-start;flex-wrap:wrap}.agent-header .fid-outline{font-size:.8rem;padding:9px 12px}}
+@media(prefers-reduced-motion:reduce){.agent-choice{transition:none}.agent-choice:hover{transform:none}}

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Espace agent | Wizer Institut</title>
+  <link rel="icon" href="../assets/icons/logo-wizer-neon-icon-w.webp" type="image/webp">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="fidelity.css">
+  <link rel="stylesheet" href="agent.css">
+  <script src="agent.js" defer></script>
+</head>
+<body class="fid-body fid-agent agent-body">
+  <header class="fid-header agent-header">
+    <a href="../index.html" aria-label="Retour à Wizer Institut"><img class="fid-logo" src="../assets/logo/wizer.webp" alt="Wizer Institut"></a>
+    <a href="../index.html" class="fid-outline">← Retour au site</a>
+  </header>
+  <main class="fid-wrap agent-wrap">
+    <div class="fid-intro">
+      <p class="eyebrow">WIZER INSTITUT · ESPACE RÉSERVÉ</p>
+      <h1>ACCÈS <span>AGENT.</span></h1>
+      <p>Un seul accès pour gérer les cartes fidélité et les communications du salon.</p>
+    </div>
+
+    <div id="agent-loading" class="fid-loading" aria-live="polite">
+      <img src="../assets/logo/wizer.webp" alt="Vérification de la session">
+      <p>Vérification de l’accès…</p>
+    </div>
+    <div id="agent-message" class="fid-msg" role="status" aria-live="polite" hidden></div>
+
+    <section id="agent-auth" class="fid-card agent-auth" hidden aria-labelledby="agent-auth-title">
+      <h2 id="agent-auth-title">Connexion du personnel</h2>
+      <p class="fid-help">Entrez le mot de passe habituel des agents pour ouvrir les deux espaces.</p>
+      <form id="agent-form" class="fid-form">
+        <label>Mot de passe du salon
+          <input name="password" type="password" minlength="16" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="fid-primary">Accéder à l’espace agent</button>
+      </form>
+    </section>
+
+    <section id="agent-dashboard" class="agent-dashboard" hidden aria-labelledby="agent-dashboard-title">
+      <div class="agent-dashboard-top">
+        <div><p class="eyebrow">SESSION AGENT ACTIVE</p><h2 id="agent-dashboard-title">Que souhaitez-vous faire ?</h2></div>
+        <button id="agent-logout" class="fid-outline" type="button">Déconnexion</button>
+      </div>
+      <div class="agent-choices">
+        <a class="agent-choice" href="scan-fidelity.html">
+          <span class="agent-choice-icon" aria-hidden="true">▦</span>
+          <span class="agent-choice-caption">GESTION DES POINTS</span>
+          <strong>Fidelity</strong>
+          <span class="agent-choice-detail">Scanner les QR codes, retrouver les clientes et valider une prestation.</span>
+          <span class="agent-choice-link">Ouvrir le scanner <span aria-hidden="true">↗</span></span>
+        </a>
+        <a class="agent-choice" href="marketing-fidelity.html">
+          <span class="agent-choice-icon" aria-hidden="true">✉</span>
+          <span class="agent-choice-caption">COMMUNICATION CLIENT</span>
+          <strong>Marketing</strong>
+          <span class="agent-choice-detail">Rédiger des messages, personnaliser les emails et suivre les campagnes.</span>
+          <span class="agent-choice-link">Ouvrir le marketing <span aria-hidden="true">↗</span></span>
+        </a>
+      </div>
+      <p class="agent-session-help">Le mot de passe est demandé une seule fois durant la session agent. Pensez à vous déconnecter sur un appareil partagé.</p>
+    </section>
+  </main>
+  <footer class="fid-footer"><a href="../confidentialite.html">Confidentialité</a><span>© Wizer Institut</span></footer>
+</body>
+</html>

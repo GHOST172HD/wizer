@@ -6,7 +6,7 @@ async function call(path,data){
  if(!res.ok)throw Error(answer.error||'Opération impossible.');return answer;
 }
 function feedback(message,success=false){const e=el('market-message');e.textContent=message;e.hidden=false;e.classList.toggle('good',success);e.scrollIntoView({behavior:'smooth',block:'nearest'});}
-function view(authorized){el('market-auth').hidden=authorized;el('market-app').hidden=!authorized;}
+function view(authorized){el('market-app').hidden=!authorized;}
 function substitute(text){return String(text||'').replace(/\{\{\s*(prenom|nom|points)\s*\}\}/gi,(_,k)=>({prenom:'Marie',nom:'Exemple',points:'6'})[k.toLowerCase()]);}
 function preview(){
  el('preview-subject').textContent=substitute(el('campaign-subject').value);
@@ -26,17 +26,6 @@ async function overview(){
   article.append(h,details);list.append(article);
  }
 }
-el('market-login').addEventListener('submit',async e=>{
- e.preventDefault();const form=e.currentTarget,button=form.querySelector('[type=submit]');button.disabled=true;
- try{await call('admin/login',{password:new FormData(form).get('password')});form.reset();view(true);await overview();feedback('Accès autorisé.',true);}catch(error){feedback(error.message);}finally{button.disabled=false;}
-});
-el('market-logout').addEventListener('click',async()=>{try{await call('admin/logout',{});}finally{view(false);feedback('Déconnexion effectuée.',true);}});
-el('refresh-campaigns').addEventListener('click',()=>overview().catch(e=>feedback(e.message)));
-for(const id of ['campaign-subject','campaign-message','campaign-button-label','campaign-button-url'])el(id).addEventListener('input',preview);
-for(const b of document.querySelectorAll('[data-token]'))b.addEventListener('click',()=>{
- const input=el('campaign-message'),t=b.dataset.token,start=input.selectionStart,end=input.selectionEnd;
- input.value=input.value.slice(0,start)+t+input.value.slice(end);input.focus();input.setSelectionRange(start+t.length,start+t.length);preview();
-});
 el('campaign-form').addEventListener('submit',async e=>{
  e.preventDefault();const button=el('campaign-send');
  const data={subject:el('campaign-subject').value,message:el('campaign-message').value,button_label:el('campaign-button-label').value,button_url:el('campaign-button-url').value};
@@ -48,4 +37,7 @@ el('campaign-form').addEventListener('submit',async e=>{
  catch(error){feedback(error.message);}finally{button.disabled=false;button.textContent='Envoyer aux clientes abonnées';}
 });
 preview();
-(async()=>{try{await call('admin/me');view(true);await overview();}catch(_){view(false);}})();
+(async()=>{
+ try{await call('admin/me');view(true);await overview();}
+ catch(e){view(false);if(e.message==='Accès agent interdit.')window.location.replace('agent.html');else feedback(e.message);}
+})();

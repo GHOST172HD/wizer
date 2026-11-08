@@ -6,7 +6,7 @@ const api=async(path,body)=>{
  if(!res.ok)throw new Error(data.error||'Opération impossible');return data;
 };
 function msg(text,good=false){const p=el('message');p.hidden=false;p.classList.toggle('good',good);p.textContent=text;}
-function staffView(ok){el('staff-auth').hidden=ok;el('staff-app').hidden=!ok;if(!ok){el('customer').hidden=true;selected=null;}}
+function staffView(ok){el('staff-app').hidden=!ok;if(!ok){el('customer').hidden=true;selected=null;}}
 let scanner=null,running=false,selected=null,lock=false;
 function loadScanner(){return new Promise((done,fail)=>{
  if(window.Html5Qrcode){done();return;}
@@ -31,11 +31,6 @@ async function inspect(code){
   if(running)await endCamera();
  }catch(e){msg(e.message);el('customer').hidden=true;selected=null;}finally{lock=false;}
 }
-el('staff-form').addEventListener('submit',async e=>{
- e.preventDefault();const form=e.currentTarget,password=new FormData(form).get('password');
- el('loading').hidden=false;el('message').hidden=true;
- try{await api('admin/login',{password});form.reset();staffView(true);msg('Accès agent validé.',true);}catch(e){msg(e.message);}finally{el('loading').hidden=true;}
-});
 el('start-camera').addEventListener('click',async()=>{
  try{
   await loadScanner();el('start-camera').disabled=true;
@@ -58,7 +53,8 @@ el('award').addEventListener('click',async()=>{
   el('customer-points').textContent=String(d.points);selected.points=d.points;msg(d.message,true);el('customer').hidden=true;selected=null;
  }catch(e){msg(e.message);}finally{button.disabled=false;lock=false;}
 });
-el('staff-logout').addEventListener('click',async()=>{
- await endCamera();try{await api('admin/logout',{});}catch(_){}staffView(false);msg('Session agent terminée.',true);
-});
-(async()=>{try{await api('admin/me');staffView(true);}catch(_){staffView(false);}})();
+(async()=>{
+ try{await api('admin/me');staffView(true);}
+ catch(e){staffView(false);if(e.message==='Accès agent interdit.')window.location.replace('agent.html');else msg(e.message);}
+ finally{el('loading').hidden=true;}
+})();
