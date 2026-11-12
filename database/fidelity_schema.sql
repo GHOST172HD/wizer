@@ -1,5 +1,7 @@
 -- Wizer fidélité — modèle logique relationnel issu du MCD Merise.
+
 PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS clients (
   id TEXT PRIMARY KEY,
   email_index TEXT NOT NULL UNIQUE,
@@ -14,13 +16,16 @@ CREATE TABLE IF NOT EXISTS clients (
   total_points INTEGER NOT NULL DEFAULT 0 CHECK(total_points >= 0),
   cree_le INTEGER NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS sessions (
   identifiant_hash TEXT PRIMARY KEY,
   type_session TEXT NOT NULL CHECK(type_session IN ('client','agent')),
   client_id TEXT REFERENCES clients(id) ON DELETE CASCADE,
   expire_le INTEGER NOT NULL
 );
+
 CREATE INDEX IF NOT EXISTS idx_sessions_expiration ON sessions(expire_le);
+
 CREATE TABLE IF NOT EXISTS mouvements_points (
   id TEXT PRIMARY KEY,
   client_id TEXT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
@@ -29,7 +34,9 @@ CREATE TABLE IF NOT EXISTS mouvements_points (
   cree_le INTEGER NOT NULL,
   operation_id TEXT NOT NULL UNIQUE
 );
+
 CREATE INDEX IF NOT EXISTS idx_points_client_date ON mouvements_points(client_id, cree_le DESC);
+
 CREATE TABLE IF NOT EXISTS recompenses (
   id TEXT PRIMARY KEY,
   titre TEXT NOT NULL,
@@ -37,6 +44,7 @@ CREATE TABLE IF NOT EXISTS recompenses (
   points_requis INTEGER CHECK(points_requis IS NULL OR points_requis > 0),
   active INTEGER NOT NULL DEFAULT 0 CHECK(active IN (0,1))
 );
+
 CREATE TABLE IF NOT EXISTS utilisations_recompenses (
   id TEXT PRIMARY KEY,
   client_id TEXT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
@@ -44,52 +52,65 @@ CREATE TABLE IF NOT EXISTS utilisations_recompenses (
   mouvement_id TEXT REFERENCES mouvements_points(id),
   cree_le INTEGER NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS reinitialisations (
   jeton_hash TEXT PRIMARY KEY,
   client_id TEXT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
   expire_le INTEGER NOT NULL,
   utilise_le INTEGER
 );
+
 CREATE TABLE IF NOT EXISTS tentatives_connexion (
   cle_hash TEXT PRIMARY KEY,
   nombre INTEGER NOT NULL,
   debut_fenetre INTEGER NOT NULL
 );
+
+
 -- Idées conservées, mais non activées et sans seuil tant qu'il n'est pas choisi.
+
 INSERT OR IGNORE INTO recompenses (id, titre, description, points_requis, active) VALUES
  ('soin-offert', 'Soin découverte offert', 'Une prestation découverte selon les disponibilités.', NULL, 0),
  ('reduction', 'Réduction fidélité', 'Remise sur une future prestation, montant à décider.', NULL, 0),
  ('upgrade', 'Surclassement de prestation', 'Un supplément de soin offert avec une prestation.', NULL, 0);
 
+
 -- Nouveau module Marketing (pour les nouvelles installations uniquement).
-
-
 
 CREATE TABLE IF NOT EXISTS marketing_preferences (
  client_id TEXT PRIMARY KEY REFERENCES clients(id) ON DELETE CASCADE,
  subscribed INTEGER NOT NULL DEFAULT 0 CHECK(subscribed IN (0,1)),
  subscribed_at INTEGER,
  unsubscribed_at INTEGER,
+ 
  source TEXT NOT NULL DEFAULT 'compte'
 );
+
 CREATE INDEX IF NOT EXISTS idx_marketing_consent ON marketing_preferences(subscribed);
+
+
 CREATE TABLE IF NOT EXISTS marketing_campaigns (
  id TEXT PRIMARY KEY,
  subject TEXT NOT NULL,
  message TEXT NOT NULL,
  button_label TEXT NOT NULL,
  button_url TEXT NOT NULL,
+ 
  status TEXT NOT NULL DEFAULT 'queued' CHECK(status IN ('queued','completed')),
  created_at INTEGER NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS marketing_deliveries (
  campaign_id TEXT NOT NULL REFERENCES marketing_campaigns(id) ON DELETE CASCADE,
  client_id TEXT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+ 
  state TEXT NOT NULL DEFAULT 'pending' CHECK(state IN ('pending','sending','sent','skipped','failed')),
  attempts INTEGER NOT NULL DEFAULT 0,
  updated_at INTEGER NOT NULL,
  retry_at INTEGER NOT NULL DEFAULT 0,
  last_error TEXT,
+ 
  PRIMARY KEY (campaign_id, client_id)
 );
+
 CREATE INDEX IF NOT EXISTS idx_marketing_pending ON marketing_deliveries(state,retry_at);

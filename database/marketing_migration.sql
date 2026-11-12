@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS marketing_preferences (
  unsubscribed_at INTEGER,
  source TEXT NOT NULL DEFAULT 'compte'
 );
+
 CREATE INDEX IF NOT EXISTS idx_marketing_consent ON marketing_preferences(subscribed);
+
 CREATE TABLE IF NOT EXISTS marketing_campaigns (
  id TEXT PRIMARY KEY,
  subject TEXT NOT NULL,
@@ -18,6 +20,7 @@ CREATE TABLE IF NOT EXISTS marketing_campaigns (
  status TEXT NOT NULL DEFAULT 'queued' CHECK(status IN ('queued','completed')),
  created_at INTEGER NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS marketing_deliveries (
  campaign_id TEXT NOT NULL REFERENCES marketing_campaigns(id) ON DELETE CASCADE,
  client_id TEXT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
@@ -28,4 +31,5 @@ CREATE TABLE IF NOT EXISTS marketing_deliveries (
  last_error TEXT,
  PRIMARY KEY (campaign_id, client_id)
 );
+
 CREATE INDEX IF NOT EXISTS idx_marketing_pending ON marketing_deliveries(state,retry_at);

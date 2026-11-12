@@ -36,6 +36,42 @@ el('campaign-form').addEventListener('submit',async e=>{
  try{const answer=await call('admin/marketing/campaign',data);feedback(`${answer.queued} email(s) mis en file d'attente. Les envois sont automatisés et visibles dans le suivi.`,true);await overview();}
  catch(error){feedback(error.message);}finally{button.disabled=false;button.textContent='Envoyer aux clientes abonnées';}
 });
+// Personnalisation : insérer la variable à la position du curseur.
+// Mémoriser la sélection évite que le clic sur un bouton ne perde le curseur.
+const campaignMessage = el('campaign-message');
+let messageSelection = {start: campaignMessage.value.length, end: campaignMessage.value.length};
+function rememberMessageSelection(){
+ messageSelection = {start: campaignMessage.selectionStart, end: campaignMessage.selectionEnd};
+}
+for(const eventName of ['click','keyup','select','input','focus','touchend']){
+ campaignMessage.addEventListener(eventName, rememberMessageSelection);
+}
+for(const button of document.querySelectorAll('.market-tokens button[data-token]')){
+ button.addEventListener('click',()=>{
+  const token=button.dataset.token;
+  if(!/^\{\{(?:prenom|nom|points)\}\}$/.test(token))return;
+  const start=Math.min(messageSelection.start,campaignMessage.value.length);
+  const end=Math.min(messageSelection.end,campaignMessage.value.length);
+  campaignMessage.setRangeText(token,start,end,'end');
+  campaignMessage.focus({preventScroll:true});
+  rememberMessageSelection();
+  campaignMessage.dispatchEvent(new Event('input',{bubbles:true}));
+  preview(); // Mise à jour immédiate, même si le navigateur ne relaie pas l’événement.
+ });
+}
+// Aperçu en direct : saisie, collage, suppression, modifications et auto-complétion.
+// L'écoute sur le formulaire évite les oublis sur certains champs.
+const livePreviewFields = new Set(['campaign-subject', 'campaign-message', 'campaign-button-label', 'campaign-button-url']);
+const campaignForm = el('campaign-form');
+function syncPreviewFromForm(event){
+ if(event.target && livePreviewFields.has(event.target.id)) preview();
+}
+campaignForm.addEventListener('input', syncPreviewFromForm);
+campaignForm.addEventListener('change', syncPreviewFromForm);
+// Sur certains navigateurs, les valeurs d'un formulaire peuvent être restaurées
+// lorsque l'utilisateur revient à la page (cache de navigation).
+window.addEventListener('pageshow', preview);
+
 preview();
 (async()=>{
  try{await call('admin/me');view(true);await overview();}
