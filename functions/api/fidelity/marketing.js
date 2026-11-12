@@ -10,13 +10,20 @@ const esc = value => String(value).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt
 const isURL = value => typeof value==='string' && value.length<=400 && /^https:\/\/[^\s<>"']{4,}$/i.test(value) && (()=>{try{return new URL(value).protocol==='https:'}catch{return false}})();
 const sample = {prenom:'Marie',nom:'Exemple',points:6};
 const interpolate = (content, values) => content.replace(/\{\{\s*(prenom|nom|points)\s*\}\}/gi,(_,k)=>String(values[k.toLowerCase()] ?? ''));
+const htmlText = content => esc(content).replace(/https:\/\/[^\s<]+/g, raw=>{
+  const url=raw.replace(/[.,;!?]+$/,'');
+  return isURL(url)?`<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#e54a51;text-decoration:underline">${url}</a>${raw.slice(url.length)}`:raw;
+}).replace(/\n/g,'<br>');
 const textToHtml = content => {
-  // Pas de HTML arbitraire injecté: texte échappé + HTTPS cliquables automatiquement.
-  const safe=esc(content);
-  return safe.replace(/https:\/\/[^\s<]+/g, raw=>{
-    const url=raw.replace(/[.,;!?]+$/,'');
-    return isURL(url)?`<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#e54a51;text-decoration:underline">${url}</a>${raw.slice(url.length)}`:raw;
-  }).replace(/\n/g,'<br>');
+  // Seul **texte** devient gras. Texte et liens HTTPS restent échappés : jamais de HTML libre.
+  const pattern=/\*\*([\s\S]+?)\*\*/g;
+  let cursor=0, result='', match;
+  while((match=pattern.exec(content))!==null){
+    result+=htmlText(content.slice(cursor,match.index));
+    result+=`<strong style="font-weight:700">${htmlText(match[1])}</strong>`;
+    cursor=pattern.lastIndex;
+  }
+  return result+htmlText(content.slice(cursor));
 };
 const unsubscribeLink = (origin,clientId,token) => `${origin}/fidelity-files/desabonnement.html?id=${encodeURIComponent(clientId)}&token=${encodeURIComponent(token)}`;
 async function signUnsubscribe(clientId,key){

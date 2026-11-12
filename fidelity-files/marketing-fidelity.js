@@ -8,9 +8,25 @@ async function call(path,data){
 function feedback(message,success=false){const e=el('market-message');e.textContent=message;e.hidden=false;e.classList.toggle('good',success);e.scrollIntoView({behavior:'smooth',block:'nearest'});}
 function view(authorized){el('market-app').hidden=!authorized;}
 function substitute(text){return String(text||'').replace(/\{\{\s*(prenom|nom|points)\s*\}\}/gi,(_,k)=>({prenom:'Marie',nom:'Exemple',points:'6'})[k.toLowerCase()]);}
+// Formatage limité au gras **texte** : création de noeuds texte, sans HTML injecté.
+function previewMessage(content){
+ const node=el('preview-message');
+ const fragment=document.createDocumentFragment();
+ const pattern=/\*\*([\s\S]+?)\*\*/g;
+ let cursor=0, match;
+ while((match=pattern.exec(content))!==null){
+  fragment.append(document.createTextNode(content.slice(cursor,match.index)));
+  const strong=document.createElement('strong');
+  strong.textContent=match[1];
+  fragment.append(strong);
+  cursor=pattern.lastIndex;
+ }
+ fragment.append(document.createTextNode(content.slice(cursor)));
+ node.replaceChildren(fragment);
+}
 function preview(){
  el('preview-subject').textContent=substitute(el('campaign-subject').value);
- el('preview-message').textContent=substitute(el('campaign-message').value);
+ previewMessage(substitute(el('campaign-message').value));
  el('preview-button').textContent=substitute(el('campaign-button-label').value);
  const link=el('campaign-button-url').value.trim();
  el('preview-button').href=/^https:\/\//i.test(link)?link:'https://wizer-kin.com/';
